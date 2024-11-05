@@ -1,2 +1,12 @@
+<div>
+    <a (click)="play()">Play</a>
+    <a (click)="checkAnswer()">Check</a>
+    @if(showQuestion) {
+        <div> Point to {{cityName}} </div>
+    }
+    @if(showAnswer) {
+        <div>You are {{distance}} away.</div>
+    }
+</div>
 <div id="map" class="map"></div>
 

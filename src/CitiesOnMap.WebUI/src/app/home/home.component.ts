@@ -12,12 +12,11 @@ import { MapComponent } from "../map/map.component";
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
-  constructor(private http: HttpClient) {
+  constructor() {
     
   }
-  testResult: object = { default: "No response" };
+  
   ngOnInit(): void {
-    this.http.get(baseUrl + "/test")
-      .subscribe(response => this.testResult = response);
+    
   }
 }
