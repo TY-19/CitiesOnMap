@@ -8,5 +8,11 @@
         <div>You are {{distance}} away.</div>
     }
 </div>
-<div id="map" class="map"></div>
+<select (change)="selectSource($event)">
+  <option value="opentopomap">OpenTopoMap</option>
+  <option value="OSM">OSM</option>
+</select>
+<div class="map-container">
+  <div id="map" class="map"></div>
+</div>
 

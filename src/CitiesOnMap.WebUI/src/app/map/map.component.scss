@@ -1,4 +1,13 @@
 .map {
-    width: 98vw;
+    width: 92vw;
     height: 90vh;
   }
+
+:host ::ng-deep .map-container .ol-zoom .ol-zoom-in {
+  position: absolute;
+  top: 1.5em;
+}
+:host ::ng-deep .map-container .ol-zoom .ol-zoom-out {
+  position: absolute;
+  top: 2.95em;
+}
