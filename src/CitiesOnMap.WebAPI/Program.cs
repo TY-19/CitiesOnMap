@@ -1,8 +1,12 @@
+using CitiesOnMap.Application.Behaviors;
 using CitiesOnMap.Application.Interfaces;
+using CitiesOnMap.Application.Queries.GetNextCity;
 using CitiesOnMap.Application.Services;
 using CitiesOnMap.Infrastructure.Data;
 using CitiesOnMap.Infrastructure.Extensions;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
@@ -24,8 +28,15 @@ builder.Services.AddSwaggerGen(o =>
 {
     o.SwaggerDoc("v1", new OpenApiInfo { Title = "Cities on map", Version = "v1" });
 });
+builder.Services.AddMediatR(o =>
+{
+    o.RegisterServicesFromAssemblyContaining<GetNextCityRequest>();
+    o.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+});
 builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
+builder.Services.AddScoped<IMemoryCache, MemoryCache>();
 builder.Services.AddScoped<IImportService, ImportService>();
+builder.Services.AddScoped<IGameService, GameService>();
 builder.Services.AddControllers();
 
 WebApplication app = builder.Build();

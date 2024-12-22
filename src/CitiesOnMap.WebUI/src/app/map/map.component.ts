@@ -1,17 +1,14 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, } from '@angular/core';
 import 'ol/ol.css';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import { OSM, XYZ } from 'ol/source';
 import TileLayer from 'ol/layer/Tile';
-import { toLonLat } from 'ol/proj';
-import { Coordinate } from 'ol/coordinate';
 
 @Component({
   selector: 'citom-map',
   standalone: true,
   imports: [],
-  // encapsulation: ViewEncapsulation.None,
   templateUrl: './map.component.html',
   styleUrl: './map.component.scss'
 })
@@ -25,7 +22,6 @@ export class MapComponent implements OnInit {
     this.map = new Map({
       layers: [
         new TileLayer({
-          // source: new OSM(),
           source: new XYZ({url: 'https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png'})
         }),
       ],
@@ -53,7 +49,6 @@ export class MapComponent implements OnInit {
       case "opentopomap":
         this.map.setLayers([
           new TileLayer({
-            // source: new OSM(),
             source: new XYZ({url: 'https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png'})
           }),
         ])
@@ -62,7 +57,6 @@ export class MapComponent implements OnInit {
         this.map.setLayers([
           new TileLayer({
             source: new OSM(),
-            // source: new XYZ({url: 'https://{a-c}.tile.opentopomap.org/{z}/{x}/{y}.png'})
           }),
         ])
         break;
