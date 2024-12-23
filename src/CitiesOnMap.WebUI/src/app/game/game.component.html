@@ -1,0 +1,12 @@
+<div>
+  <a (click)="startGame()">Play</a>
+  <a (click)="nextQuestion()">Next question</a>
+  <a (click)="checkAnswer()">Check</a>
+  @if(showQuestion) {
+    <div> Point to {{game?.currentCityName}} </div>
+  }
+  @if(showAnswer) {
+    <div>You are {{answerResult?.distance}} away.</div>
+  }
+</div>
+<citom-map (selectedPoint)="setCoordinate($event)"></citom-map>

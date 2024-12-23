@@ -1,13 +1,3 @@
-<div>
-    <a (click)="play()">Play</a>
-    <a (click)="checkAnswer()">Check</a>
-    @if(showQuestion) {
-        <div> Point to {{cityName}} </div>
-    }
-    @if(showAnswer) {
-        <div>You are {{distance}} away.</div>
-    }
-</div>
 <select (change)="selectSource($event)">
   <option value="opentopomap">OpenTopoMap</option>
   <option value="OSM">OSM</option>
