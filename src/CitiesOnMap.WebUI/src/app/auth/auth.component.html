@@ -1,0 +1,9 @@
+<form [formGroup]="form">
+  <label>Username:</label>
+  <input formControlName="username" name="username" placeholder="" type="text" />
+  <label>Password:</label>
+  <input formControlName="password" name="password" placeholder="" type="password" />
+  <button type="button" (click)="onSubmit()">Login</button>
+  <span> Status: {{isLoggedIn}} </span><button type="button" (click)="logout()">Logout</button>
+</form>
+

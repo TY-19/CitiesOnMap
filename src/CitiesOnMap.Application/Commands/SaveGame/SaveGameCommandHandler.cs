@@ -1,4 +1,5 @@
 using CitiesOnMap.Application.Interfaces;
+using CitiesOnMap.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -12,7 +13,17 @@ public class SaveGameCommandHandler(
     public async Task Handle(SaveGameCommand command, CancellationToken cancellationToken)
     {
         cache.Set(command.Game.Id, command.Game);
-        await context.Games.AddAsync(command.Game, cancellationToken);
+        Game? game = context.Games.FirstOrDefault(g => g.Id == command.Game.Id);
+        if (game == null)
+        {
+            await context.Games.AddAsync(command.Game, cancellationToken);
+        }
+        else
+        {
+            game = command.Game;
+            context.Games.Update(game);
+        }
+
         await context.SaveChangesAsync(cancellationToken);
     }
 }

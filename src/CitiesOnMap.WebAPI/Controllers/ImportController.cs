@@ -5,7 +5,9 @@ namespace CitiesOnMap.WebAPI.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class ImportController(IImportService importService) : ControllerBase
+public class ImportController(
+    IImportService importService
+) : ControllerBase
 {
     [HttpPost("countries")]
     public async Task<ActionResult> ImportCountries(IFormFile csvFile, CancellationToken cancellationToken)
