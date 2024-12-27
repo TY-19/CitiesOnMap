@@ -22,7 +22,7 @@ public static class WebApplicationExtensions
         var applicationManager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
         var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
         var initializer = new DbContextInitializer(context, userManager, roleManager,
-            scopeManager, applicationManager, configuration, logger);
+            applicationManager, configuration, logger);
         await initializer.InitializeAsync();
     }
 }

@@ -1,3 +1,4 @@
+using System.Text;
 using CitiesOnMap.Application.Behaviors;
 using CitiesOnMap.Application.Interfaces;
 using CitiesOnMap.Application.Queries.GetNextCity;
@@ -6,9 +7,11 @@ using CitiesOnMap.Infrastructure.Data;
 using CitiesOnMap.Infrastructure.Extensions;
 using CitiesOnMap.Infrastructure.Identity;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OpenIddict.Abstractions;
 using OpenIddict.Validation.AspNetCore;
@@ -17,7 +20,17 @@ using Serilog;
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthentication(o =>
-    o.DefaultScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
+    {
+        o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        o.DefaultChallengeScheme = OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme;
+    })
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddGoogle(o =>
+    {
+        o.ClientId = builder.Configuration["OAuth:Google:ClientId"] ?? "";
+        o.ClientSecret = builder.Configuration["OAuth:Google:ClientSecret"] ?? "";
+        o.CallbackPath = "/api/signin-google";
+    });
 builder.Services.AddAuthorization();
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
@@ -32,26 +45,27 @@ builder.Services.AddOpenIddict()
     })
     .AddServer(o =>
     {
-        o.SetAuthorizationEndpointUris("api/connect/authorize");
         o.SetUserInfoEndpointUris("api/connect/userInfo");
         o.SetTokenEndpointUris("api/connect/token");
-        o.AllowAuthorizationCodeFlow()
-            .RequireProofKeyForCodeExchange();
-        o.AddEphemeralEncryptionKey()
-            .AddEphemeralSigningKey()
-            .DisableAccessTokenEncryption();
-        o.RegisterScopes(OpenIddictConstants.Scopes.OpenId, OpenIddictConstants.Scopes.Profile, "demo_api");
-        o.UseAspNetCore()
-            .EnableTokenEndpointPassthrough()
-            .EnableAuthorizationEndpointPassthrough()
-            .EnableUserInfoEndpointPassthrough();
-        o.AllowClientCredentialsFlow();
-        o.AllowPasswordFlow();
-        o.AllowRefreshTokenFlow();
-        o.AddDevelopmentSigningCertificate()
-            .AddDevelopmentEncryptionCertificate();
         o.SetIntrospectionEndpointUris("api/connect/token/introspect");
         o.SetRevocationEndpointUris("api/connect/token/revoke");
+        
+        o.RegisterScopes(OpenIddictConstants.Scopes.OpenId, OpenIddictConstants.Scopes.Email,
+            OpenIddictConstants.Scopes.Profile, OpenIddictConstants.Scopes.OfflineAccess);
+        
+        o.UseAspNetCore()
+            .EnableTokenEndpointPassthrough()
+            .EnableUserInfoEndpointPassthrough();
+        
+        o.AllowPasswordFlow();
+        o.AllowRefreshTokenFlow();
+        
+        o.AddDevelopmentEncryptionCertificate()
+            .AddDevelopmentSigningCertificate();
+        o.AddSigningKey(new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Security:SigningKey"]
+                                       ?? throw new Exception("Signing key is not configured"))))
+            .DisableAccessTokenEncryption();
     })
     .AddValidation(o =>
     {
@@ -91,19 +105,6 @@ builder.Services.AddSwaggerGen(o =>
                 Password = new OpenApiOAuthFlow
                 {
                     TokenUrl = new Uri("https://localhost:40443/api/Connect/token"),
-                    Scopes = new Dictionary<string, string>
-                    {
-                        ["demo_api"] = "Demo API"
-                    }
-                },
-                AuthorizationCode = new OpenApiOAuthFlow
-                {
-                    AuthorizationUrl = new Uri("https://localhost:40443/api/Connect/authorize"),
-                    TokenUrl = new Uri("https://localhost:40443/api/Connect/token"),
-                    Scopes = new Dictionary<string, string>
-                    {
-                        ["demo_api"] = "Demo API"
-                    }
                 }
             }
         }
@@ -120,7 +121,7 @@ builder.Services.AddSwaggerGen(o =>
                         Id = "oauth2"
                     }
                 },
-                ["demo_api"]
+                []
             }
         }
     );
