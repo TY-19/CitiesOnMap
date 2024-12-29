@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CitiesOnMap.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class AddOpenIddict : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -51,69 +51,18 @@ namespace CitiesOnMap.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Games",
+                name: "Countries",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    PlayerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Points = table.Column<int>(type: "int", nullable: false),
-                    Previous = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CurrentCityId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    LastPlayTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Iso2 = table.Column<string>(type: "varchar(2)", nullable: false),
+                    Iso3 = table.Column<string>(type: "varchar(3)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Games", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Games_Cities_CurrentCityId",
-                        column: x => x.CurrentCityId,
-                        principalTable: "Cities",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OpenIddictApplications",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ApplicationType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ClientId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ClientSecret = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClientType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ConcurrencyToken = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    ConsentType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DisplayNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    JsonWebKeySet = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Permissions = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PostLogoutRedirectUris = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Properties = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RedirectUris = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Requirements = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Settings = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OpenIddictApplications", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OpenIddictScopes",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ConcurrencyToken = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Descriptions = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DisplayNames = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
-                    Properties = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Resources = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OpenIddictScopes", x => x.Id);
+                    table.PrimaryKey("PK_Countries", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -223,59 +172,48 @@ namespace CitiesOnMap.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OpenIddictAuthorizations",
+                name: "Cities",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ApplicationId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ConcurrencyToken = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Properties = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Scopes = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Subject = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
-                    Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NameAscii = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Latitude = table.Column<decimal>(type: "decimal(7,4)", precision: 7, scale: 4, nullable: false),
+                    Longitude = table.Column<decimal>(type: "decimal(7,4)", precision: 7, scale: 4, nullable: false),
+                    CountryId = table.Column<int>(type: "int", nullable: false),
+                    AdministrationName = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CapitalType = table.Column<int>(type: "int", nullable: false),
+                    Population = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OpenIddictAuthorizations", x => x.Id);
+                    table.PrimaryKey("PK_Cities", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OpenIddictAuthorizations_OpenIddictApplications_ApplicationId",
-                        column: x => x.ApplicationId,
-                        principalTable: "OpenIddictApplications",
-                        principalColumn: "Id");
+                        name: "FK_Cities_Countries_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Countries",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "OpenIddictTokens",
+                name: "Games",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ApplicationId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    AuthorizationId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ConcurrencyToken = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Payload = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Properties = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RedemptionDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ReferenceId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Subject = table.Column<string>(type: "nvarchar(400)", maxLength: 400, nullable: true),
-                    Type = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
+                    PlayerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Points = table.Column<int>(type: "int", nullable: false),
+                    Previous = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CurrentCityId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    LastPlayTime = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OpenIddictTokens", x => x.Id);
+                    table.PrimaryKey("PK_Games", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_OpenIddictTokens_OpenIddictApplications_ApplicationId",
-                        column: x => x.ApplicationId,
-                        principalTable: "OpenIddictApplications",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_OpenIddictTokens_OpenIddictAuthorizations_AuthorizationId",
-                        column: x => x.AuthorizationId,
-                        principalTable: "OpenIddictAuthorizations",
+                        name: "FK_Games_Cities_CurrentCityId",
+                        column: x => x.CurrentCityId,
+                        principalTable: "Cities",
                         principalColumn: "Id");
                 });
 
@@ -319,45 +257,14 @@ namespace CitiesOnMap.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Cities_CountryId",
+                table: "Cities",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Games_CurrentCityId",
                 table: "Games",
                 column: "CurrentCityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OpenIddictApplications_ClientId",
-                table: "OpenIddictApplications",
-                column: "ClientId",
-                unique: true,
-                filter: "[ClientId] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OpenIddictAuthorizations_ApplicationId_Status_Subject_Type",
-                table: "OpenIddictAuthorizations",
-                columns: new[] { "ApplicationId", "Status", "Subject", "Type" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OpenIddictScopes_Name",
-                table: "OpenIddictScopes",
-                column: "Name",
-                unique: true,
-                filter: "[Name] IS NOT NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OpenIddictTokens_ApplicationId_Status_Subject_Type",
-                table: "OpenIddictTokens",
-                columns: new[] { "ApplicationId", "Status", "Subject", "Type" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OpenIddictTokens_AuthorizationId",
-                table: "OpenIddictTokens",
-                column: "AuthorizationId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_OpenIddictTokens_ReferenceId",
-                table: "OpenIddictTokens",
-                column: "ReferenceId",
-                unique: true,
-                filter: "[ReferenceId] IS NOT NULL");
         }
 
         /// <inheritdoc />
@@ -382,22 +289,16 @@ namespace CitiesOnMap.Infrastructure.Migrations
                 name: "Games");
 
             migrationBuilder.DropTable(
-                name: "OpenIddictScopes");
-
-            migrationBuilder.DropTable(
-                name: "OpenIddictTokens");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "OpenIddictAuthorizations");
+                name: "Cities");
 
             migrationBuilder.DropTable(
-                name: "OpenIddictApplications");
+                name: "Countries");
         }
     }
 }

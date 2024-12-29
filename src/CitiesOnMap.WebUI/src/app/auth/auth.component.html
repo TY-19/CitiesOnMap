@@ -4,6 +4,7 @@
   <label>Password:</label>
   <input formControlName="password" name="password" placeholder="" type="password" />
   <button type="button" (click)="onSubmit()">Login</button>
-  <span> Status: {{isLoggedIn}} </span><button type="button" (click)="logout()">Logout</button>
+  <span> Status: </span><button type="button" (click)="logout()">Logout</button>
 </form>
+<button type="button" (click)="loginGoogle()">Login Google</button>
 

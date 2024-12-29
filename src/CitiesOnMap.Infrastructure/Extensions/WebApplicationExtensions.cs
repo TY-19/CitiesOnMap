@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using OpenIddict.Abstractions;
 
 namespace CitiesOnMap.Infrastructure.Extensions;
 
@@ -18,11 +17,8 @@ public static class WebApplicationExtensions
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbContextInitializer>>();
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
         var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
-        var scopeManager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
-        var applicationManager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
         var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
-        var initializer = new DbContextInitializer(context, userManager, roleManager,
-            applicationManager, configuration, logger);
+        var initializer = new DbContextInitializer(context, userManager, roleManager, configuration, logger);
         await initializer.InitializeAsync();
     }
 }

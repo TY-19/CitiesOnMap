@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
   selector: 'citom-auth',
   standalone: true,
   imports: [
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.scss'
@@ -16,9 +16,9 @@ export class AuthComponent {
     username: new FormControl("username", [ Validators.required ]),
     password: new FormControl("password", [ Validators.required ])
   });
-  get isLoggedIn() {
-    return this.authService.isLoggedIn;
-  }
+  // get isLoggedIn() {
+  //
+  // }
   constructor(private authService: AuthService) {
 
   }
@@ -26,10 +26,13 @@ export class AuthComponent {
     if(this.form.valid) {
       let username = this.form.controls['username'].value;
       let password = this.form.controls['password'].value;
-      this.authService.login(username, password);
+
     }
   }
+  loginGoogle() {
+
+  }
   logout() {
-    this.authService.logout();
+
   }
 }

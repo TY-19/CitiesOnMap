@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using OpenIddict.Abstractions;
 
 namespace CitiesOnMap.Infrastructure.Data;
 
@@ -12,7 +11,6 @@ public class DbContextInitializer
     private readonly AppDbContext _context;
     private readonly UserManager<User> _userManager;
     private readonly RoleManager<Role> _roleManager;
-    private readonly IOpenIddictApplicationManager _applicationManager;
     private readonly ILogger<DbContextInitializer> _logger;
     private readonly string _adminEmail;
     private readonly string _adminPassword;
@@ -21,14 +19,12 @@ public class DbContextInitializer
     public DbContextInitializer(AppDbContext context,
         UserManager<User> userManager,
         RoleManager<Role> roleManager,
-        IOpenIddictApplicationManager applicationManager,
         IConfiguration configuration,
         ILogger<DbContextInitializer> logger)
     {
         _context = context;
         _userManager = userManager;
         _roleManager = roleManager;
-        _applicationManager = applicationManager;
         _logger = logger;
         _adminEmail = configuration["DefaultAdmin:Email"] ?? "admin@example.com";
         _adminPassword = configuration["DefaultAdmin:Password"] ?? "Pa$$w0rd";
@@ -47,7 +43,6 @@ public class DbContextInitializer
         await ApplyMigrationsAsync();
         await SeedDefaultRolesAsync();
         await SeedDefaultAdminAsync();
-        await RegisterOpenIdDictApplicationsAsync();
     }
 
     private async Task ApplyMigrationsAsync()
@@ -109,40 +104,5 @@ public class DbContextInitializer
         await _userManager.CreateAsync(administrator, _adminPassword);
         await _userManager.AddToRoleAsync(administrator, "Administrator");
         _logger.LogInformation("Default admin '{AdminEmail}' has been seeded.", _adminEmail);
-    }
-
-    private async Task RegisterOpenIdDictApplicationsAsync()
-    {
-        var descriptor = new OpenIddictApplicationDescriptor
-        {
-            ClientId = "angular-app",
-            ClientType = OpenIddictConstants.ClientTypes.Public,
-            Permissions =
-            {
-                OpenIddictConstants.Permissions.Endpoints.Token,
-                OpenIddictConstants.Permissions.Endpoints.Authorization,
-                OpenIddictConstants.Permissions.Endpoints.Introspection,
-                OpenIddictConstants.Permissions.Endpoints.Revocation,
-                OpenIddictConstants.Permissions.GrantTypes.Password,
-                OpenIddictConstants.Permissions.GrantTypes.RefreshToken,
-                OpenIddictConstants.Permissions.ResponseTypes.Token,
-                OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.OpenId,
-                OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.Email,
-                OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.Profile,
-                OpenIddictConstants.Permissions.Prefixes.Scope + OpenIddictConstants.Scopes.OfflineAccess
-            },
-            RedirectUris =
-            {
-                new Uri("http://localhost:4200"),
-                new Uri("https://localhost:40443/swagger/v1/swagger.json")
-            }
-        };
-        object? client = await _applicationManager.FindByClientIdAsync("angular-app");
-        if (client is not null)
-        {
-            await _applicationManager.DeleteAsync(client);
-        }
-        
-        await _applicationManager.CreateAsync(descriptor);
     }
 }
