@@ -60,7 +60,7 @@ namespace CitiesOnMap.Infrastructure.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Cities");
+                    b.ToTable("Cities", (string)null);
                 });
 
             modelBuilder.Entity("CitiesOnMap.Domain.Entities.Country", b =>
@@ -85,7 +85,7 @@ namespace CitiesOnMap.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries");
+                    b.ToTable("Countries", (string)null);
                 });
 
             modelBuilder.Entity("CitiesOnMap.Domain.Entities.Game", b =>
@@ -114,7 +114,7 @@ namespace CitiesOnMap.Infrastructure.Migrations
 
                     b.HasIndex("CurrentCityId");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", (string)null);
                 });
 
             modelBuilder.Entity("CitiesOnMap.Infrastructure.Identity.Role", b =>

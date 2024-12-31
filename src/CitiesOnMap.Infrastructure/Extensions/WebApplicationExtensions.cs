@@ -1,5 +1,5 @@
+using CitiesOnMap.Domain.Entities;
 using CitiesOnMap.Infrastructure.Data;
-using CitiesOnMap.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;

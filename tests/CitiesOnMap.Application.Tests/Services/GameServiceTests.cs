@@ -4,8 +4,8 @@ using CitiesOnMap.Application.Models;
 using CitiesOnMap.Application.Queries.GetGame;
 using CitiesOnMap.Application.Queries.GetNextCity;
 using CitiesOnMap.Application.Services;
-using CitiesOnMap.Domain;
 using CitiesOnMap.Domain.Entities;
+using CitiesOnMap.Domain.Enums;
 using MediatR;
 using NSubstitute;
 

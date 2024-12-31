@@ -7,7 +7,10 @@ public class ResultDetails(ResultType type)
         [ResultType.Undefined] = "Unknown result.",
         [ResultType.Succeeded] = "Succeeded.",
         [ResultType.GameNotExist] = "The game does not exist.",
-        [ResultType.NoCityInQuestion] = "There are no city to point out to."
+        [ResultType.NoCityInQuestion] = "There are no city to point out to.",
+        [ResultType.UserNotExist] = "The user does not exist.",
+        [ResultType.InvalidToken] = "A token is invalid.",
+        [ResultType.TokenExpired] = "The token has expired."
     };
 
     public ResultDetails() : this(ResultType.Undefined)

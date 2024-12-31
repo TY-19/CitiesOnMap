@@ -1,14 +1,14 @@
 using System.Reflection;
 using CitiesOnMap.Application.Interfaces;
 using CitiesOnMap.Domain.Entities;
-using CitiesOnMap.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace CitiesOnMap.Infrastructure.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options)
-    : IdentityDbContext<User, Role, string>(options), IAppDbContext
+    : IdentityDbContext<User, Role, string, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>(options),
+        IAppDbContext
 {
     public DbSet<City> Cities => Set<City>();
     public DbSet<Country> Countries => Set<Country>();

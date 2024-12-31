@@ -1,3 +1,5 @@
+using CitiesOnMap.Domain.Enums;
+
 namespace CitiesOnMap.Domain.Entities;
 
 public class City

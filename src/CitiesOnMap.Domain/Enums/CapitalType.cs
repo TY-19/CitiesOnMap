@@ -1,4 +1,4 @@
-namespace CitiesOnMap.Domain;
+namespace CitiesOnMap.Domain.Enums;
 
 public enum CapitalType
 {

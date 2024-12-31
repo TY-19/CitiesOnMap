@@ -1,21 +1,58 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using CitiesOnMap.Application.Behaviors;
 using CitiesOnMap.Application.Interfaces;
 using CitiesOnMap.Application.Queries.GetNextCity;
 using CitiesOnMap.Application.Services;
+using CitiesOnMap.Domain.Constants;
+using CitiesOnMap.Domain.Entities;
 using CitiesOnMap.Infrastructure.Data;
 using CitiesOnMap.Infrastructure.Extensions;
 using CitiesOnMap.Infrastructure.Identity;
 using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication();
-builder.Services.AddAuthorization();
+builder.Services.AddAuthentication(o =>
+    {
+        o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, o =>
+    {
+        string? key = Environment.GetEnvironmentVariable("JwtSettings:SecurityKey");
+        if (string.IsNullOrEmpty(key))
+        {
+            key = builder.Configuration["JwtSettings:SecurityKey"];
+        }
+
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            RequireExpirationTime = true,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = Environment.GetEnvironmentVariable("JwtSettings:Issuer")
+                          ?? builder.Configuration["JwtSettings:Issuer"],
+            ValidAudience = Environment.GetEnvironmentVariable("JwtSettings:Audience")
+                            ?? builder.Configuration["JwtSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(key!))
+        };
+    });
+builder.Services.AddAuthorizationBuilder()
+    .SetDefaultPolicy(new AuthorizationPolicyBuilder(JwtBearerDefaults.AuthenticationScheme)
+        .RequireAuthenticatedUser()
+        .Build());
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
@@ -30,7 +67,7 @@ builder.Services.AddIdentity<User, Role>(o =>
         o.Password.RequiredLength = 8;
     })
     .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
+    .AddTokenProvider<DataProtectorTokenProvider<User>>(Defaults.DefaultProvider);
 builder.Services.AddSerilog(o => o.ReadFrom.Configuration(builder.Configuration));
 builder.Services.AddCors(o =>
     o.AddPolicy("LocalHostPolicy", cfg =>
@@ -42,8 +79,29 @@ builder.Services.AddCors(o =>
 builder.Services.AddSwaggerGen(o =>
 {
     o.SwaggerDoc("v1", new OpenApiInfo { Title = "Cities on map", Version = "v1" });
-        
-    
+    o.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = JwtBearerDefaults.AuthenticationScheme
+    });
+    o.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = JwtBearerDefaults.AuthenticationScheme
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
 });
 builder.Services.AddMediatR(o =>
 {
@@ -53,8 +111,11 @@ builder.Services.AddMediatR(o =>
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IAppDbContext>(provider => provider.GetRequiredService<AppDbContext>());
 builder.Services.AddScoped<IMemoryCache, MemoryCache>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IImportService, ImportService>();
 builder.Services.AddScoped<IGameService, GameService>();
+builder.Services.AddScoped<IUserManager, UserManager>();
+builder.Services.AddScoped<JwtSecurityTokenHandler>();
 
 builder.Services.AddControllers();
 
@@ -77,7 +138,7 @@ app.UseSwaggerUI(c =>
     c.OAuthClientId("angular-app");
 });
 
-app.MapGet("/", (context) =>
+app.MapGet("/", context =>
 {
     context.Response.Redirect("/swagger/index.html");
     return Task.CompletedTask;

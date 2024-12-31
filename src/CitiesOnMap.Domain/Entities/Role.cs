@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace CitiesOnMap.Infrastructure.Identity;
+namespace CitiesOnMap.Domain.Entities;
 
 public class Role : IdentityRole
 {

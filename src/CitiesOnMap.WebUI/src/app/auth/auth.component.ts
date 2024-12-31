@@ -22,6 +22,15 @@ export class AuthComponent {
   constructor(private authService: AuthService) {
 
   }
+  register(): void {
+    if(this.form.valid) {
+      let email = this.form.controls['username'].value;
+      let password = this.form.controls['password'].value;
+      let username = email.substring(0, email.indexOf('@'));
+      this.authService.registerUser(username, email, password)
+        .subscribe(res => console.log(res));
+    }
+  }
   onSubmit() {
     if(this.form.valid) {
       let username = this.form.controls['username'].value;
@@ -29,10 +38,13 @@ export class AuthComponent {
 
     }
   }
-  loginGoogle() {
-
+  loginOauth(provider: string) {
+    this.authService.startAuthorization(provider);
   }
   logout() {
 
+  }
+  profile() {
+    this.authService.getUserInfo();
   }
 }

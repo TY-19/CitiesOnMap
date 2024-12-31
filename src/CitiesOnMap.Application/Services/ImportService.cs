@@ -1,6 +1,6 @@
 using CitiesOnMap.Application.Interfaces;
-using CitiesOnMap.Domain;
 using CitiesOnMap.Domain.Entities;
+using CitiesOnMap.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace CitiesOnMap.Application.Services;

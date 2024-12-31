@@ -1,4 +1,4 @@
-namespace CitiesOnMap.Domain;
+namespace CitiesOnMap.Domain.Constants;
 
 public static class AppConstants
 {

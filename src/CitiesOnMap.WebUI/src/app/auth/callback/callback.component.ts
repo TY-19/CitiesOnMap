@@ -16,6 +16,24 @@ export class CallbackComponent {
     private router: Router) {
   }
   ngOnInit(): void {
+    let stateVerifier = localStorage.getItem("oauth-request-state") ?? "";
+    this.activatedRoute.queryParams.subscribe((params) => {
+      const authorizationCode = params['code'];
+      const state = params['state'];
 
+      if (state !== stateVerifier) {
+        console.error('Invalid state parameter');
+        return;
+      }
+      let provider = stateVerifier.split(':')[0];
+      if (authorizationCode) {
+        this.authService.loginExternal(provider, authorizationCode)
+          .subscribe(res => {
+            this.router.navigate(['/']);
+          })
+      } else {
+        console.error('Authorization code not found in callback');
+      }
+    });
   }
 }

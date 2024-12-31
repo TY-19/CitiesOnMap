@@ -4,7 +4,9 @@
   <label>Password:</label>
   <input formControlName="password" name="password" placeholder="" type="password" />
   <button type="button" (click)="onSubmit()">Login</button>
+  <button type="button" (click)="register()">Registration</button>
   <span> Status: </span><button type="button" (click)="logout()">Logout</button>
 </form>
-<button type="button" (click)="loginGoogle()">Login Google</button>
+<button type="button" (click)="loginOauth('google')">Login Google</button>
+<button type="button" (click)="profile()">Test authorization</button>
 

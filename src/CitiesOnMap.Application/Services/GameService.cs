@@ -5,7 +5,7 @@ using CitiesOnMap.Application.Interfaces;
 using CitiesOnMap.Application.Models;
 using CitiesOnMap.Application.Queries.GetGame;
 using CitiesOnMap.Application.Queries.GetNextCity;
-using CitiesOnMap.Domain;
+using CitiesOnMap.Domain.Constants;
 using CitiesOnMap.Domain.Entities;
 using MediatR;
 

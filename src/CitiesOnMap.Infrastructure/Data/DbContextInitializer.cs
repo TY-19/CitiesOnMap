@@ -1,4 +1,4 @@
-using CitiesOnMap.Infrastructure.Identity;
+using CitiesOnMap.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -8,13 +8,13 @@ namespace CitiesOnMap.Infrastructure.Data;
 
 public class DbContextInitializer
 {
-    private readonly AppDbContext _context;
-    private readonly UserManager<User> _userManager;
-    private readonly RoleManager<Role> _roleManager;
-    private readonly ILogger<DbContextInitializer> _logger;
     private readonly string _adminEmail;
     private readonly string _adminPassword;
+    private readonly AppDbContext _context;
+    private readonly ILogger<DbContextInitializer> _logger;
+    private readonly RoleManager<Role> _roleManager;
     private readonly bool _skipSeeding;
+    private readonly UserManager<User> _userManager;
 
     public DbContextInitializer(AppDbContext context,
         UserManager<User> userManager,
@@ -33,13 +33,14 @@ public class DbContextInitializer
             _skipSeeding = false;
         }
     }
-    
+
     public async Task InitializeAsync()
     {
         if (_skipSeeding)
         {
             return;
         }
+
         await ApplyMigrationsAsync();
         await SeedDefaultRolesAsync();
         await SeedDefaultAdminAsync();
