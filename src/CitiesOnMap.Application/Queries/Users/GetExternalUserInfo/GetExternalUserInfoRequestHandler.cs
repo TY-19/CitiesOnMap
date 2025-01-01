@@ -1,4 +1,4 @@
-using CitiesOnMap.Application.Models.Login.External;
+using CitiesOnMap.Application.Models.Authorization.External;
 using MediatR;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;

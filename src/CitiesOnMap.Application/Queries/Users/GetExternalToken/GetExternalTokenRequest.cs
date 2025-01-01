@@ -1,5 +1,5 @@
-using CitiesOnMap.Application.Common;
-using CitiesOnMap.Application.Models.Login.External;
+using CitiesOnMap.Application.Common.Results;
+using CitiesOnMap.Application.Models.Authorization.External;
 using MediatR;
 
 namespace CitiesOnMap.Application.Queries.Users.GetExternalToken;

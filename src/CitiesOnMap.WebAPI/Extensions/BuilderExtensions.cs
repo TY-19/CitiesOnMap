@@ -11,9 +11,9 @@ using CitiesOnMap.Domain.Constants;
 using CitiesOnMap.Domain.Entities;
 using CitiesOnMap.Infrastructure.Data;
 using CitiesOnMap.Infrastructure.Identity;
+using CitiesOnMap.WebAPI.Configurations;
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -21,7 +21,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Serilog;
 using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace CitiesOnMap.WebAPI.Extensions;
@@ -58,8 +57,8 @@ public static class BuilderExtensions
     {
         builder.Services.AddAuthentication()
             .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme);
-        builder.Services.ConfigureOptions<AuthenticationOptions>();
-        builder.Services.ConfigureOptions<JwtBearerOptions>();
+        builder.Services.ConfigureOptions<AuthenticationConfiguration>();
+        builder.Services.ConfigureOptions<JwtBearerConfiguration>();
     }
 
     private static void RegisterAuthorization(this WebApplicationBuilder builder)
@@ -75,7 +74,7 @@ public static class BuilderExtensions
         builder.Services.AddIdentity<User, Role>()
             .AddEntityFrameworkStores<AppDbContext>()
             .AddTokenProvider<DataProtectorTokenProvider<User>>(Defaults.DefaultProvider);
-        builder.Services.ConfigureOptions<IdentityOptions>();
+        builder.Services.ConfigureOptions<IdentityConfiguration>();
     }
 
     private static void RegisterCors(this WebApplicationBuilder builder)
@@ -128,7 +127,7 @@ public static class BuilderExtensions
     private static void RegisterSwagger(this WebApplicationBuilder builder)
     {
         builder.Services.AddSwaggerGen();
-        builder.Services.ConfigureOptions<SwaggerGenOptions>();
+        builder.Services.ConfigureOptions<SwaggerGenConfiguration>();
     }
 
     private static void RegisterDiServices(this WebApplicationBuilder builder)
@@ -141,7 +140,7 @@ public static class BuilderExtensions
         builder.Services.AddScoped<IGameService, GameService>();
         builder.Services.AddScoped<IUserManager, UserManager>();
         builder.Services.AddScoped<JwtSecurityTokenHandler>();
-        builder.Services.AddScoped<IConfigurationHelper, ConfigurationHelper>();
         builder.Services.AddScoped<IHashingHelper, HashingHelper>();
+        builder.Services.AddTransient<IConfigurationHelper, ConfigurationHelper>();
     }
 }

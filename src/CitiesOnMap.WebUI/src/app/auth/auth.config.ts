@@ -1,28 +1,9 @@
-import { AuthConfig } from 'angular-oauth2-oidc';
+import { AuthProviderConfig } from "../_models/auth/authProviderConfig";
 
-export const customAuthConfig: AuthConfig = {
-  issuer: "https://localhost:40443/",
-  redirectUri: "http://localhost:4200/",
-  tokenEndpoint: "https://localhost:40443/api/connect/token",
-  clientId: "angular-app",
-  responseType: "password",
-  scope: "profile",
-  silentRefreshRedirectUri: "http://localhost:4200/silent-refresh.html",
-  oidc: false,
-  disablePKCE: false,
-  showDebugInformation: true,
-}
-export const googleAuthConfig: AuthConfig = {
-  redirectUri: "http://localhost:4200/callback",
-  clientId: "angular-app",
-  loginUrl: "https://localhost:40443/api/connect/authorize",
-  tokenEndpoint: "https://localhost:40443/api/connect/token",
-  responseType: "code",
-  scope: "https://www.googleapis.com/auth/userinfo.email",
-  silentRefreshRedirectUri: "http://localhost:4200/silent-refresh.html",
-  oidc: true,
-  disablePKCE: false,
-  showDebugInformation: true,
-  skipIssuerCheck: true,
-  strictDiscoveryDocumentValidation: false
+export const googleConfig: AuthProviderConfig = {
+  authUrl: 'https://accounts.google.com/o/oauth2/v2/auth',
+  clientId: '334636357841-d5kh1tm8jncngj4jugk31li3ef6rv6es.apps.googleusercontent.com',
+  redirectUri: 'http://localhost:4200/callback',
+  scope: 'https://www.googleapis.com/auth/userinfo.email',
+  statePrefix: "google:",
 }

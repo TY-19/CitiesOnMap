@@ -1,6 +1,6 @@
-using CitiesOnMap.Application.Commands.SaveGame;
-using CitiesOnMap.Application.Common;
-using CitiesOnMap.Application.Extensions;
+using CitiesOnMap.Application.Commands.Games.SaveGame;
+using CitiesOnMap.Application.Common.Results;
+using CitiesOnMap.Application.Extensions.Mappings;
 using CitiesOnMap.Application.Interfaces.Services;
 using CitiesOnMap.Application.Models.Game;
 using CitiesOnMap.Application.Queries.GetGame;
@@ -31,10 +31,7 @@ public class GameService(IMediator mediator) : IGameService
             return new OperationResult<GameModel>(false, ResultType.GameNotExist);
         }
 
-        var request = new GetNextCityRequest
-        {
-            Previous = game.Previous
-        };
+        var request = new GetNextCityRequest(game.Previous);
         City? city = await mediator.Send(request, cancellationToken);
         game.CurrentCity = city;
         await mediator.Send(new SaveGameCommand(game), cancellationToken);

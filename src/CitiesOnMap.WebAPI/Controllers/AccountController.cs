@@ -1,11 +1,9 @@
-using CitiesOnMap.Application.Common;
+using CitiesOnMap.Application.Common.Results;
 using CitiesOnMap.Application.Interfaces.Services;
-using CitiesOnMap.Application.Models.Login;
-using CitiesOnMap.Application.Models.Login.External;
-using CitiesOnMap.Domain.Entities;
+using CitiesOnMap.Application.Models.Authorization;
+using CitiesOnMap.Application.Models.Authorization.External;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace CitiesOnMap.WebAPI.Controllers;
 
@@ -17,8 +15,8 @@ public class AccountController(IAccountService accountService) : ControllerBase
     public async Task<ActionResult<TokensModel>> Registration(RegistrationRequestModel model,
         CancellationToken cancellationToken)
     {
-        OperationResult<User> result = await accountService.RegisterUserAsync(model, cancellationToken);
-        return result.Succeeded ? NoContent() : BadRequest("Registration has failed.");
+        OperationResult<TokensModel> result = await accountService.RegisterUserAsync(model, cancellationToken);
+        return HandleOperationResult(result);
     }
 
     [HttpPost("login")]
@@ -38,31 +36,19 @@ public class AccountController(IAccountService accountService) : ControllerBase
     }
 
     [Authorize]
-    [HttpPut("refresh")]
-    public async Task<ActionResult<TokensModel>> RefreshTokens(RefreshTokensModel model,
+    [HttpPost("refresh")]
+    public async Task<ActionResult<TokensModel>> RefreshTokens(RefreshTokenModel model,
         CancellationToken cancellationToken)
     {
-        string? email = User.FindFirst(ClaimTypes.Email)?.Value;
-        if (email == null)
-        {
-            return Unauthorized();
-        }
-
-        OperationResult<TokensModel> result = await accountService.RefreshTokensAsync(email, model, cancellationToken);
+        OperationResult<TokensModel> result = await accountService.RefreshTokensAsync(model, cancellationToken);
         return HandleOperationResult(result);
     }
 
     [Authorize]
-    [HttpDelete("revoke")]
-    public async Task<ActionResult> RevokeToken(RefreshTokensModel model, CancellationToken cancellationToken)
+    [HttpPost("revoke")]
+    public async Task<ActionResult> RevokeToken(RefreshTokenModel model, CancellationToken cancellationToken)
     {
-        string? email = User.FindFirst(ClaimTypes.Email)?.Value;
-        if (email == null)
-        {
-            return Unauthorized();
-        }
-
-        OperationResult result = await accountService.RevokeTokenAsync(email, model, cancellationToken);
+        OperationResult result = await accountService.RevokeTokenAsync(model, cancellationToken);
         return result.Succeeded ? NoContent() : BadRequest(result.Details.Message);
     }
 
@@ -73,7 +59,7 @@ public class AccountController(IAccountService accountService) : ControllerBase
     }
 
     [HttpGet("password-reset")]
-    public async Task<ActionResult> StartPasswordReseting()
+    public async Task<ActionResult> StartPasswordResetting()
     {
         throw new NotImplementedException();
     }

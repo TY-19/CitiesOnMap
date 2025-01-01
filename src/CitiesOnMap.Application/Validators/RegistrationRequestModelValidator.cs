@@ -1,4 +1,5 @@
-using CitiesOnMap.Application.Models.Login;
+using CitiesOnMap.Application.Extensions;
+using CitiesOnMap.Application.Models.Authorization;
 using FluentValidation;
 
 namespace CitiesOnMap.Application.Validators;
@@ -16,7 +17,6 @@ public class RegistrationRequestModelValidator : AbstractValidator<RegistrationR
             .EmailAddress()
             .WithMessage("Email should be valid");
         RuleFor(x => x.Password)
-            .MinimumLength(8)
-            .WithMessage("Password must be at least 8 characters long.");
+            .ApplyPasswordValidationRules();
     }
 }

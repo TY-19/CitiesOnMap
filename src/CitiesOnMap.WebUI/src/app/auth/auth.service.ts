@@ -1,112 +1,118 @@
-import { HttpClient } from "@angular/common/http";
+import {HttpClient, HttpResponseBase} from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import pkceChallenge from "pkce-challenge";
-import { baseUrl } from "../app.config";
-import { TokensModel } from "../_models/tokensModel";
 import {BehaviorSubject, catchError, finalize, Observable, tap, throwError } from "rxjs";
+import {googleConfig} from "./auth.config";
+import {LocalStorageService} from "../_common/localStorage.service";
+import { baseUrl } from "../app.config";
+import { TokensModel } from "../_models/auth/tokensModel";
+import {AuthProviderConfig} from "../_models/auth/authProviderConfig";
+import {RegistrationRequest} from "../_models/auth/registrationRequest";
+import {CodeExchangeModel} from "../_models/auth/codeExchangeModel";
+import {RefreshTokenModel} from "../_models/auth/refreshTokenModel";
+import {LoginRequest} from "../_models/auth/loginRequest";
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
+  private readonly markAsExpiredForMilliseconds: number = 30000;
   private refreshLock: boolean = false;
   private refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   private refreshQueue: Array<any> = [];
-  private readonly accessTokenKey: string = 'access_token';
-  private readonly accessTokenExpirationKey: string = 'access_token_expiration';
-  private readonly refreshTokenKey: string = 'refresh_token';
-  private readonly refreshTokenExpirationKey: string = 'refresh_token_expiration';
-  private readonly codeVerifierKey: string = 'pkce_code_verifier';
-  private readonly stateKey: string = 'oauth-request-state';
+
   get isAuthorized(): boolean {
-    return localStorage.getItem(this.accessTokenKey) !== null;
+    return this.localStorageService.accessToken !== null;
   }
   get accessToken(): string | null {
-    return localStorage.getItem(this.accessTokenKey);
+    return this.localStorageService.accessToken;
   }
-  get accessTokenExpiration(): Date | null {
-    let dateString = localStorage.getItem(this.accessTokenExpirationKey);
-    if(!dateString) {
-      return null;
-    }
-    return new Date(dateString)
-  }
-  get refreshToken(): string | null {
-    return localStorage.getItem(this.refreshTokenKey);
-  }
-  get refreshTokenExpiration(): Date | null {
-    let dateString = localStorage.getItem(this.refreshTokenExpirationKey);
-    if(!dateString) {
-      return null;
-    }
-    return new Date(dateString)
-  }
-  constructor(
-    private http: HttpClient,
+
+  constructor(private http: HttpClient,
+              private localStorageService: LocalStorageService
   ) {
   }
-  registerUser(userName: string, email: string, password: string): Observable<object> {
-    let url = baseUrl + "/account/register";
-    let body: object = {
+
+  registerUser(userName: string, email: string, password: string): Observable<TokensModel> {
+    const url: string = baseUrl + "/account/register";
+    const body: RegistrationRequest = {
       userName: userName,
       email: email,
       password: password
     };
-    return this.http.post(url, body);
+    return this.http.post<TokensModel>(url, body);
   }
-  startAuthorization(provider: string): void {
-    this.startGoogleAuthorization();
-  }
-  loginExternal(provider: string, code: string): Observable<TokensModel> {
-    let url = baseUrl + "/account/login/" + provider;
-    let body: object = {
-      code: code,
-      codeVerifier: localStorage.getItem(this.codeVerifierKey)
+
+  login(userNameOrEmail: string, password: string): Observable<TokensModel> {
+    const url: string = baseUrl + "/account/login";
+    const body: LoginRequest = {
+      userName: null,
+      email: null,
+      password: password
     };
+    if(userNameOrEmail.includes("@")) {
+      body.email = userNameOrEmail;
+    } else {
+      body.userName = userNameOrEmail;
+    }
     return this.http.post<TokensModel>(url, body)
-      .pipe(tap(tokens => this.storeTokens(tokens)));
+      .pipe(tap(tokens => this.localStorageService.storeTokens(tokens)));
   }
-  startGoogleAuthorization(): void {
+
+  startExternalAuthorization(provider: string): void {
+    const providerConfig: AuthProviderConfig = this.selectProviderConfig(provider);
     pkceChallenge().then(({ code_verifier, code_challenge }) => {
-      const googleAuthUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
-      const clientId = '334636357841-d5kh1tm8jncngj4jugk31li3ef6rv6es.apps.googleusercontent.com';
-      const redirectUri = 'http://localhost:4200/callback';
-      const scope = 'https://www.googleapis.com/auth/userinfo.email';
-      const state: string = "google:" + Math.random() + Date.now().toString();
-      const responseType = "code";
-      const codeChallengeMethod = 'S256';
-
-      localStorage.setItem(this.codeVerifierKey, code_verifier);
-      localStorage.setItem(this.stateKey, state);
-
-      const authUrl = new URL(googleAuthUrl);
-      authUrl.searchParams.set('client_id', clientId);
-      authUrl.searchParams.set('redirect_uri', redirectUri);
-      authUrl.searchParams.set('scope', scope);
-      authUrl.searchParams.set('state', state);
-      authUrl.searchParams.set('response_type', responseType);
-      authUrl.searchParams.set('code_challenge', code_challenge);
-      authUrl.searchParams.set('code_challenge_method', codeChallengeMethod);
-
-      window.location.href = authUrl.toString();
+      const state: string = providerConfig.statePrefix + Math.random() + Date.now().toString();
+      this.localStorageService.storeCodeRequestParameters(code_verifier, state);
+      window.location.href = this.buildAuthUrl(providerConfig, code_challenge, state)
     });
   }
-  storeTokens(tokens: TokensModel) {
-    if(tokens.accessToken) {
-      localStorage.setItem(this.accessTokenKey, tokens.accessToken);
-    }
-    if(tokens.accessTokenExpiration) {
-      localStorage.setItem(this.accessTokenExpirationKey, tokens.accessTokenExpiration.toString());
-    }
-    if(tokens.refreshToken) {
-      localStorage.setItem(this.refreshTokenKey, tokens.refreshToken);
-    }
-    if(tokens.refreshTokenExpiration) {
-      localStorage.setItem(this.refreshTokenExpirationKey, tokens.refreshTokenExpiration.toString());
+  private selectProviderConfig(provider: string): AuthProviderConfig {
+    switch (provider) {
+      case "Google":
+        return googleConfig;
+      default:
+        return googleConfig;
     }
   }
+  private buildAuthUrl(providerConfig: AuthProviderConfig, codeChallenge: string, state: string) {
+    const authUrl = new URL(providerConfig.authUrl);
+    authUrl.searchParams.set('client_id', providerConfig.clientId);
+    authUrl.searchParams.set('redirect_uri', providerConfig.redirectUri);
+    authUrl.searchParams.set('scope', providerConfig.scope);
+    authUrl.searchParams.set('state', state);
+    authUrl.searchParams.set('response_type', "code");
+    authUrl.searchParams.set('code_challenge', codeChallenge);
+    authUrl.searchParams.set('code_challenge_method', "S256");
+    return authUrl.toString();
+  }
+
+  loginExternal(provider: string, code: string): Observable<TokensModel> {
+    const url = baseUrl + "/account/login/" + provider;
+    const body: CodeExchangeModel = {
+      code: code,
+      codeVerifier: this.localStorageService.codeVerifier ?? ""
+    };
+    return this.http.post<TokensModel>(url, body)
+      .pipe(tap(tokens => {
+        this.localStorageService.storeTokens(tokens);
+        this.localStorageService.removeTokensFormStorage();
+      }));
+  }
+
+  isAccessTokenExpired(): boolean {
+    return this.isExpired(this.localStorageService.accessTokenExpiration);
+  }
+  isRefreshTokenExpired(): boolean {
+    return this.isExpired(this.localStorageService.refreshTokenExpiration);
+  }
+  private isExpired(expiration: Date | null): boolean {
+    const expirationTime: number | undefined = expiration?.getTime();
+    return !expirationTime || new Date().getTime() > expirationTime - this.markAsExpiredForMilliseconds;
+  }
+
   refreshTokens(): Observable<TokensModel> {
-    if(this.refreshLock === true) {
+    if(this.refreshLock) {
       return new Observable<TokensModel>((observer) => {
         this.refreshQueue.push(() => {
           this.refreshTokens()
@@ -119,15 +125,15 @@ export class AuthService {
       this.refreshLock = true;
       this.refreshTokenSubject.next(null);
 
-      let url = baseUrl + "/api/account/refresh"
-      let body = {
-        accessToken: this.accessToken,
-        refreshToken: this.refreshToken
+      const url = baseUrl + "/api/account/refresh"
+      const body: RefreshTokenModel = {
+        userName: this.localStorageService.userName ?? "",
+        refreshToken: this.localStorageService.refreshToken ?? ""
       };
       return this.http.post<TokensModel>(url, body)
         .pipe(
           tap(res => {
-            this.storeTokens(res);
+            this.localStorageService.storeTokens(res);
             this.refreshTokenSubject.next(res.accessToken);
             this.refreshQueue.forEach(request => request());
             this.refreshQueue = [];
@@ -145,14 +151,17 @@ export class AuthService {
     }
   }
   getUserInfo() {
-    let url = baseUrl + "/account/profile";
+    const url = baseUrl + "/account/profile";
     this.http.get(url)
       .subscribe(res => console.log(res));
   }
-  logOut(): void {
-    localStorage.removeItem(this.accessTokenKey);
-    localStorage.removeItem(this.accessTokenExpirationKey);
-    localStorage.removeItem(this.refreshTokenKey);
-    localStorage.removeItem(this.refreshTokenExpirationKey);
+  logOut(): Observable<HttpResponseBase> {
+    const url: string = baseUrl + "/account/revoke";
+    const body: RefreshTokenModel = {
+      userName: this.localStorageService.userName ?? "",
+      refreshToken: this.localStorageService.refreshToken ?? ""
+    };
+    this.localStorageService.removeTokensFormStorage();
+    return this.http.post(url, body, { observe: "response" });
   }
 }

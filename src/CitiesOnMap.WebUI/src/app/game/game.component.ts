@@ -1,10 +1,10 @@
 import {Component} from '@angular/core';
 import {MapComponent} from "../map/map.component";
 import {GameService} from "./game.service";
-import {GameModel} from "../_models/gameModel";
-import {AnswerModel} from "../_models/answerModel";
+import {GameModel} from "../_models/game/gameModel";
+import {AnswerModel} from "../_models/game/answerModel";
 import {Coordinate} from "ol/coordinate";
-import {AnswerResultModel} from "../_models/answerResultModel";
+import {AnswerResultModel} from "../_models/game/answerResultModel";
 
 @Component({
   selector: 'citom-game',

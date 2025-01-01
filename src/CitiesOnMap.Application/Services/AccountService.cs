@@ -1,33 +1,39 @@
+using CitiesOnMap.Application.Commands.Authorization.GenerateTokens;
+using CitiesOnMap.Application.Commands.Authorization.RevokeToken;
 using CitiesOnMap.Application.Commands.Users.CreateUser;
-using CitiesOnMap.Application.Commands.Users.GenerateTokens;
-using CitiesOnMap.Application.Common;
-using CitiesOnMap.Application.Interfaces.Helpers;
-using CitiesOnMap.Application.Interfaces.Identity;
+using CitiesOnMap.Application.Common.Results;
 using CitiesOnMap.Application.Interfaces.Services;
-using CitiesOnMap.Application.Models.Login;
-using CitiesOnMap.Application.Models.Login.External;
+using CitiesOnMap.Application.Models.Authorization;
+using CitiesOnMap.Application.Models.Authorization.External;
 using CitiesOnMap.Application.Queries.Users.GetExternalToken;
 using CitiesOnMap.Application.Queries.Users.GetExternalUserInfo;
 using CitiesOnMap.Application.Queries.Users.GetOAuthProviderConfiguration;
 using CitiesOnMap.Application.Queries.Users.GetUser;
+using CitiesOnMap.Application.Queries.Users.ValidateRefreshToken;
 using CitiesOnMap.Domain.Entities;
 using MediatR;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace CitiesOnMap.Application.Services;
 
 public class AccountService(
-    IMediator mediator,
-    IUserManager userManager,
-    IHashingHelper hasher)
+    IMediator mediator)
     : IAccountService
 {
-    public async Task<OperationResult<User>> RegisterUserAsync(RegistrationRequestModel model,
+    public async Task<OperationResult<TokensModel>> RegisterUserAsync(RegistrationRequestModel model,
         CancellationToken cancellationToken)
     {
         var command = new CreateUserCommand(model.UserName, model.Email, model.Password);
-        return await mediator.Send(command, cancellationToken);
+        OperationResult<User> userResult = await mediator.Send(command, cancellationToken);
+        if (userResult is { Succeeded: true, Payload: not null })
+        {
+            return await LoginAsync(new LoginRequestModel
+            {
+                UserName = userResult.Payload.UserName,
+                Password = model.Password
+            }, cancellationToken);
+        }
+
+        return new OperationResult<TokensModel>(false, userResult.Details.Type);
     }
 
     public async Task<OperationResult<TokensModel>> LoginAsync(LoginRequestModel model,
@@ -58,16 +64,16 @@ public class AccountService(
             return new OperationResult<TokensModel>(false, codeExchangeResult.Details.Type);
         }
 
-        ExternalTokenResponse externalTokens = codeExchangeResult.Payload;
-
         ExternalUserInfo? userInfo = await mediator.Send(new GetExternalUserInfoRequest(provider,
-            config.UserInfoEndpoint, externalTokens.AccessToken), cancellationToken);
+            config.UserInfoEndpoint, codeExchangeResult.Payload.AccessToken), cancellationToken);
         if (userInfo == null)
         {
             return new OperationResult<TokensModel>(false, ResultType.FetchingExternalUserInfoFailed);
         }
 
-        User? user = await userManager.FindByLoginAsync(provider, userInfo.ProviderKey);
+        User? user = await mediator.Send(
+            new GetUserRequest(null, null, null, provider, userInfo.ProviderKey),
+            cancellationToken);
         if (user == null)
         {
             OperationResult<User> result = await mediator.Send(
@@ -86,37 +92,21 @@ public class AccountService(
         return new OperationResult<TokensModel>(true, tokens);
     }
 
-    public async Task<OperationResult<TokensModel>> RefreshTokensAsync(string email, RefreshTokensModel model,
+    public async Task<OperationResult<TokensModel>> RefreshTokensAsync(RefreshTokenModel model,
         CancellationToken cancellationToken)
     {
-        if (model.AccessToken == null || model.RefreshToken == null)
-        {
-            return new OperationResult<TokensModel>(false, ResultType.InvalidToken);
-        }
-
-        User? user = await userManager.FindByEmailAsync(email);
+        User? user = await mediator.Send(new GetUserRequest(null, model.UserName, null, null, null),
+            cancellationToken);
         if (user == null)
         {
             return new OperationResult<TokensModel>(false, ResultType.UserNotExist);
         }
 
-        string? token = await userManager.GetAuthenticationTokenAsync(user, "Local", "Refresh");
-        if (token == null)
+        OperationResult validationTokenResult = await mediator.Send(
+            new ValidateRefreshTokenRequest(user, model.RefreshToken), cancellationToken);
+        if (!validationTokenResult.Succeeded)
         {
-            return new OperationResult<TokensModel>(false, ResultType.InvalidToken);
-        }
-
-        string[] parts = token.Split("::");
-        if (!long.TryParse(parts[0], out long utcTicks)
-            || DateTimeOffset.UtcNow.UtcTicks > utcTicks)
-        {
-            return new OperationResult<TokensModel>(false, ResultType.TokenExpired);
-        }
-
-        string tokenHash = Convert.ToBase64String(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
-        if (tokenHash != model.RefreshToken)
-        {
-            return new OperationResult<TokensModel>(false, ResultType.InvalidToken);
+            return new OperationResult<TokensModel>(false, validationTokenResult.Details.Type);
         }
 
         TokensModel tokens = await mediator.Send(new GenerateTokensCommand(user), cancellationToken);
@@ -124,27 +114,21 @@ public class AccountService(
         return new OperationResult<TokensModel>(true, tokens);
     }
 
-    public async Task<OperationResult> RevokeTokenAsync(string email, RefreshTokensModel model,
+    public async Task<OperationResult> RevokeTokenAsync(RefreshTokenModel model,
         CancellationToken cancellationToken)
     {
-        if (model.AccessToken == null || model.RefreshToken == null)
-        {
-            return new OperationResult(false, ResultType.InvalidToken);
-        }
-
-        User? user = await userManager.FindByEmailAsync(email);
+        User? user = await mediator.Send(new GetUserRequest(null, model.UserName, null, null, null),
+            cancellationToken);
         if (user == null)
         {
             return new OperationResult(false, ResultType.UserNotExist);
         }
 
-        string? token = await userManager.GetAuthenticationTokenAsync(user, "Local", "Refresh");
-        if (token == null || token != hasher.GetSha256Hash(model.RefreshToken))
-        {
-            return new OperationResult(false, ResultType.InvalidToken);
-        }
+        OperationResult validationTokenResult = await mediator.Send(
+            new ValidateRefreshTokenRequest(user, model.RefreshToken), cancellationToken);
 
-        await userManager.SetAuthenticationTokenAsync(user, "Local", "Refresh", null);
-        return new OperationResult(true);
+        return validationTokenResult.Succeeded
+            ? await mediator.Send(new RevokeTokenCommand(user, model.RefreshToken, null), cancellationToken)
+            : new OperationResult(false);
     }
 }

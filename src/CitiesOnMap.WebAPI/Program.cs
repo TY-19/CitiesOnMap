@@ -1,4 +1,3 @@
-using CitiesOnMap.Infrastructure.Extensions;
 using CitiesOnMap.WebAPI.Extensions;
 using Serilog;
 

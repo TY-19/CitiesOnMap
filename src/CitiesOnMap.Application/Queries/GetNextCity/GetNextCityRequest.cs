@@ -3,7 +3,4 @@ using MediatR;
 
 namespace CitiesOnMap.Application.Queries.GetNextCity;
 
-public class GetNextCityRequest : IRequest<City?>
-{
-    public List<string> Previous { get; set; } = [];
-}
+public record GetNextCityRequest(List<string> Previous) : IRequest<City?>;

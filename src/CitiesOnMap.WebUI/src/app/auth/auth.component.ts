@@ -16,12 +16,11 @@ export class AuthComponent {
     username: new FormControl("username", [ Validators.required ]),
     password: new FormControl("password", [ Validators.required ])
   });
-  // get isLoggedIn() {
-  //
-  // }
+
   constructor(private authService: AuthService) {
 
   }
+
   register(): void {
     if(this.form.valid) {
       let email = this.form.controls['username'].value;
@@ -39,7 +38,7 @@ export class AuthComponent {
     }
   }
   loginOauth(provider: string) {
-    this.authService.startAuthorization(provider);
+    this.authService.startExternalAuthorization(provider);
   }
   logout() {
 

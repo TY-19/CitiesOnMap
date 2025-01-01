@@ -1,4 +1,4 @@
-using CitiesOnMap.Application.Common;
+using CitiesOnMap.Application.Common.Results;
 using CitiesOnMap.Application.Interfaces.Identity;
 using CitiesOnMap.Domain.Constants;
 using CitiesOnMap.Domain.Entities;

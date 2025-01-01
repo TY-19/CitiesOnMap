@@ -1,10 +1,10 @@
 import {HttpClient, HttpParams} from "@angular/common/http";
 import {Injectable} from "@angular/core";
 import {baseUrl} from "../app.config";
-import {GameModel} from "../_models/gameModel";
+import {GameModel} from "../_models/game/gameModel";
 import {Observable} from "rxjs";
-import {AnswerResultModel} from "../_models/answerResultModel";
-import {AnswerModel} from "../_models/answerModel";
+import {AnswerResultModel} from "../_models/game/answerResultModel";
+import {AnswerModel} from "../_models/game/answerModel";
 
 @Injectable({
   providedIn: 'root',

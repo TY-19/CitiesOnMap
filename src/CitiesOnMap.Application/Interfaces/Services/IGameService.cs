@@ -1,4 +1,4 @@
-using CitiesOnMap.Application.Common;
+using CitiesOnMap.Application.Common.Results;
 using CitiesOnMap.Application.Models.Game;
 
 namespace CitiesOnMap.Application.Interfaces.Services;
