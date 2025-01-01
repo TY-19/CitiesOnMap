@@ -1,8 +1,9 @@
 using CitiesOnMap.Application.Common;
-using CitiesOnMap.Application.Models;
+using CitiesOnMap.Application.Models.Login;
+using CitiesOnMap.Application.Models.Login.External;
 using CitiesOnMap.Domain.Entities;
 
-namespace CitiesOnMap.Application.Interfaces;
+namespace CitiesOnMap.Application.Interfaces.Services;
 
 public interface IAccountService
 {

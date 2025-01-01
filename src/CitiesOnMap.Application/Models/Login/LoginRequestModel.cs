@@ -1,4 +1,4 @@
-namespace CitiesOnMap.Application.Models;
+namespace CitiesOnMap.Application.Models.Login;
 
 public class LoginRequestModel
 {

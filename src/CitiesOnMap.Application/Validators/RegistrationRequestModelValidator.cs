@@ -1,4 +1,4 @@
-using CitiesOnMap.Application.Models;
+using CitiesOnMap.Application.Models.Login;
 using FluentValidation;
 
 namespace CitiesOnMap.Application.Validators;

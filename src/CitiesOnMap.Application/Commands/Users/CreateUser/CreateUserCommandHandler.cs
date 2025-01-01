@@ -1,10 +1,10 @@
-using System.Text.RegularExpressions;
 using CitiesOnMap.Application.Common;
-using CitiesOnMap.Application.Interfaces;
+using CitiesOnMap.Application.Interfaces.Identity;
 using CitiesOnMap.Domain.Constants;
 using CitiesOnMap.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using System.Text.RegularExpressions;
 
 namespace CitiesOnMap.Application.Commands.Users.CreateUser;
 
@@ -49,7 +49,7 @@ public partial class CreateUserCommandHandler(
 
     private async Task<bool> AddRolesAsync(User user, CreateUserCommand command)
     {
-        var succeeded = true;
+        bool succeeded = true;
         if (command.Roles?.Count == 0)
         {
             command.Roles.Add(Defaults.DefaultUserRole);

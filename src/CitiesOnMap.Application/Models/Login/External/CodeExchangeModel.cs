@@ -1,4 +1,4 @@
-namespace CitiesOnMap.Application.Models;
+namespace CitiesOnMap.Application.Models.Login.External;
 
 public class CodeExchangeModel
 {

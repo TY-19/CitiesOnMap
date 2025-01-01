@@ -1,7 +1,7 @@
 using CitiesOnMap.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 
-namespace CitiesOnMap.Application.Interfaces;
+namespace CitiesOnMap.Application.Interfaces.Identity;
 
 public interface IUserManager
 {

@@ -1,8 +1,8 @@
-using System.Reflection;
-using CitiesOnMap.Application.Interfaces;
+using CitiesOnMap.Application.Interfaces.Data;
 using CitiesOnMap.Domain.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace CitiesOnMap.Infrastructure.Data;
 

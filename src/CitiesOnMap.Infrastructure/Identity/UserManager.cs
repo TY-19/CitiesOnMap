@@ -1,4 +1,4 @@
-using CitiesOnMap.Application.Interfaces;
+using CitiesOnMap.Application.Interfaces.Identity;
 using CitiesOnMap.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;

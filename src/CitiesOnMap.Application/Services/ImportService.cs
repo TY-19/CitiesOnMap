@@ -1,4 +1,5 @@
-using CitiesOnMap.Application.Interfaces;
+using CitiesOnMap.Application.Interfaces.Data;
+using CitiesOnMap.Application.Interfaces.Services;
 using CitiesOnMap.Domain.Entities;
 using CitiesOnMap.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
@@ -41,7 +42,7 @@ public class ImportService(IAppDbContext context) : IImportService
     public async Task<string> ImportCitiesAsync(Stream csvFileStream, CancellationToken cancellationToken)
     {
         using var reader = new StreamReader(csvFileStream);
-        var count = 0;
+        int count = 0;
         while (!reader.EndOfStream)
         {
             string? line = await reader.ReadLineAsync(cancellationToken);

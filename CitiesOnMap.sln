@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{094673A8-03F9-40AA-8588-770C40D7068B}"
-	ProjectSection(SolutionItems) = preProject
-		src\CitiesOnMap.WebUI\src\app\_models\gameModel.ts = src\CitiesOnMap.WebUI\src\app\_models\gameModel.ts
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CitiesOnMap.WebAPI", "src\CitiesOnMap.WebAPI\CitiesOnMap.WebAPI.csproj", "{A921A303-FE38-495A-A92A-BB4C535FB26E}"
 EndProject

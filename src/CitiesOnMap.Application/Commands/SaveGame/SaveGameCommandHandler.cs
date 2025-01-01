@@ -1,4 +1,4 @@
-using CitiesOnMap.Application.Interfaces;
+using CitiesOnMap.Application.Interfaces.Data;
 using CitiesOnMap.Domain.Entities;
 using MediatR;
 using Microsoft.Extensions.Caching.Memory;

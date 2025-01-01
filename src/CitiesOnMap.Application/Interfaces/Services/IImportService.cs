@@ -1,4 +1,4 @@
-namespace CitiesOnMap.Application.Interfaces;
+namespace CitiesOnMap.Application.Interfaces.Services;
 
 public interface IImportService
 {

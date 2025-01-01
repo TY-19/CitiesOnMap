@@ -1,6 +1,6 @@
 using CitiesOnMap.Domain.Entities;
 
-namespace CitiesOnMap.Application.Models;
+namespace CitiesOnMap.Application.Models.Game;
 
 public class AnswerResultModel
 {

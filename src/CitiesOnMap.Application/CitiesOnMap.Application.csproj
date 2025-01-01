@@ -19,4 +19,8 @@
     <ItemGroup>
         <ProjectReference Include="..\CitiesOnMap.Domain\CitiesOnMap.Domain.csproj"/>
     </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Models\Users\"/>
+    </ItemGroup>
 </Project>

@@ -1,7 +1,7 @@
 using CitiesOnMap.Application.Common;
-using CitiesOnMap.Application.Models;
+using CitiesOnMap.Application.Models.Game;
 
-namespace CitiesOnMap.Application.Interfaces;
+namespace CitiesOnMap.Application.Interfaces.Services;
 
 public interface IGameService
 {

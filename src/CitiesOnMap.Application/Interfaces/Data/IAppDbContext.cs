@@ -1,7 +1,7 @@
 using CitiesOnMap.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace CitiesOnMap.Application.Interfaces;
+namespace CitiesOnMap.Application.Interfaces.Data;
 
 public interface IAppDbContext
 {

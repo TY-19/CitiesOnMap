@@ -1,4 +1,4 @@
-using CitiesOnMap.Application.Models;
+using CitiesOnMap.Application.Models.Game;
 using CitiesOnMap.Domain.Entities;
 
 namespace CitiesOnMap.Application.Extensions;

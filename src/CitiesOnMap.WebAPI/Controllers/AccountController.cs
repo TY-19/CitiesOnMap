@@ -1,10 +1,11 @@
-using System.Security.Claims;
 using CitiesOnMap.Application.Common;
-using CitiesOnMap.Application.Interfaces;
-using CitiesOnMap.Application.Models;
+using CitiesOnMap.Application.Interfaces.Services;
+using CitiesOnMap.Application.Models.Login;
+using CitiesOnMap.Application.Models.Login.External;
 using CitiesOnMap.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CitiesOnMap.WebAPI.Controllers;
 

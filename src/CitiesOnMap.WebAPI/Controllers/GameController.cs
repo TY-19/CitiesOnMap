@@ -1,6 +1,6 @@
 using CitiesOnMap.Application.Common;
-using CitiesOnMap.Application.Interfaces;
-using CitiesOnMap.Application.Models;
+using CitiesOnMap.Application.Interfaces.Services;
+using CitiesOnMap.Application.Models.Game;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CitiesOnMap.WebAPI.Controllers;

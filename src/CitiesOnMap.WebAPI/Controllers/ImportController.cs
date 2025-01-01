@@ -1,4 +1,4 @@
-using CitiesOnMap.Application.Interfaces;
+using CitiesOnMap.Application.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CitiesOnMap.WebAPI.Controllers;

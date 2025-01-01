@@ -1,6 +1,6 @@
 using CitiesOnMap.Application.Commands.SaveGame;
 using CitiesOnMap.Application.Common;
-using CitiesOnMap.Application.Models;
+using CitiesOnMap.Application.Models.Game;
 using CitiesOnMap.Application.Queries.GetGame;
 using CitiesOnMap.Application.Queries.GetNextCity;
 using CitiesOnMap.Application.Services;
