@@ -12,7 +12,7 @@ export class LocalStorageService {
   private readonly refreshTokenKey: string = 'refresh_token';
   private readonly refreshTokenExpirationKey: string = 'refresh_token_expiration';
   private readonly codeVerifierKey: string = 'pkce_code_verifier';
-  private readonly stateKey: string = 'oauth_request_state';
+  private readonly stateVerifierKey: string = 'oauth_request_state';
 
   get userName(): string | null {
     return localStorage.getItem(this.userNameKey);
@@ -40,6 +40,9 @@ export class LocalStorageService {
   get codeVerifier(): string | null {
     return localStorage.getItem(this.codeVerifierKey);
   }
+  get oauthRequestState(): string | null {
+    return localStorage.getItem(this.stateVerifierKey);
+  }
 
   storeTokens(tokens: TokensModel): void {
     if(tokens.userName) {
@@ -58,20 +61,21 @@ export class LocalStorageService {
       localStorage.setItem(this.refreshTokenExpirationKey, tokens.refreshTokenExpiration.toString());
     }
   }
-  removeTokensFormStorage() {
+  clearStorage() {
+    localStorage.removeItem(this.userNameKey);
     localStorage.removeItem(this.accessTokenKey);
     localStorage.removeItem(this.accessTokenExpirationKey);
     localStorage.removeItem(this.refreshTokenKey);
     localStorage.removeItem(this.refreshTokenExpirationKey);
-    localStorage.removeItem(this.stateKey);
+    localStorage.removeItem(this.stateVerifierKey);
     localStorage.removeItem(this.codeVerifierKey);
   }
   storeCodeRequestParameters(codeVerifier: string, state: string): void {
     localStorage.setItem(this.codeVerifierKey, codeVerifier);
-    localStorage.setItem(this.stateKey, state);
+    localStorage.setItem(this.stateVerifierKey, state);
   }
   clearCodeRequestParameters(): void {
     localStorage.removeItem(this.codeVerifierKey);
-    localStorage.removeItem(this.stateKey);
+    localStorage.removeItem(this.stateVerifierKey);
   }
 }

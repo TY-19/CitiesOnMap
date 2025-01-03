@@ -11,6 +11,7 @@ public interface IUserManager
     Task<User?> FindByLoginAsync(string loginProvider, string providerKey);
     Task<IdentityResult> CreateAsync(User user);
     Task<IdentityResult> AddPasswordAsync(User user, string password);
+    Task<bool> CheckPasswordAsync(User user, string password);
     Task<IdentityResult> AddToRoleAsync(User user, string role);
     Task<IdentityResult> AddLoginAsync(User user, UserLoginInfo login);
     Task<IList<string>> GetRolesAsync(User user);

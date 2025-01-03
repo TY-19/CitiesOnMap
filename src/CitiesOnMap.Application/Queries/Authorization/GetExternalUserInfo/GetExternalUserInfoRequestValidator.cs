@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace CitiesOnMap.Application.Queries.Users.GetExternalUserInfo;
+namespace CitiesOnMap.Application.Queries.Authorization.GetExternalUserInfo;
 
 public class GetExternalUserInfoRequestValidator : AbstractValidator<GetExternalUserInfoRequest>
 {

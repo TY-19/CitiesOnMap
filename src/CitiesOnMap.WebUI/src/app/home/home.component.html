@@ -1,9 +1,1 @@
-<div>
-  <a [routerLink]="['map']">Continue as a Guest</a>
-</div>
-<div>
-  <div (click)="showSignIn = !showSignIn">Sign In</div>
-  @if(showSignIn) {
-    <citom-auth></citom-auth>
-  }
-</div>
+<citom-auth></citom-auth>

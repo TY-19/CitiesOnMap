@@ -23,7 +23,7 @@ public class GetUserRequestHandler(
 
         if (user == null && request.Email != null)
         {
-            user = await userManager.FindByNameAsync(request.Email);
+            user = await userManager.FindByEmailAsync(request.Email);
         }
 
         if (user == null && request is { Provider: not null, ProviderKey: not null })

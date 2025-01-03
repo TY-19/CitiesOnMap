@@ -4,7 +4,7 @@ using CitiesOnMap.Application.Interfaces.Identity;
 using CitiesOnMap.Domain.Constants;
 using MediatR;
 
-namespace CitiesOnMap.Application.Queries.Users.ValidateRefreshToken;
+namespace CitiesOnMap.Application.Queries.Authorization.ValidateRefreshToken;
 
 public class ValidateRefreshTokenRequestHandler(
     IUserManager userManager,
@@ -27,7 +27,7 @@ public class ValidateRefreshTokenRequestHandler(
             return new OperationResult(false, ResultType.InvalidToken);
         }
 
-        return tokenHash != hasher.GetSha256Hash(request.RefreshToken)
+        return tokenHash == hasher.GetSha256Hash(request.RefreshToken)
             ? new OperationResult(true)
             : new OperationResult(false, ResultType.InvalidToken);
     }

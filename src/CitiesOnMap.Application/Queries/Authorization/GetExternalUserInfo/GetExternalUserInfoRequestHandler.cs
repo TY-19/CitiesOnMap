@@ -3,7 +3,7 @@ using MediatR;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
-namespace CitiesOnMap.Application.Queries.Users.GetExternalUserInfo;
+namespace CitiesOnMap.Application.Queries.Authorization.GetExternalUserInfo;
 
 public class GetExternalUserInfoRequestHandler(
     IHttpClientFactory factory)

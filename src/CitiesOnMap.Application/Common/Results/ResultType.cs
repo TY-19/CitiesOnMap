@@ -6,6 +6,7 @@ public enum ResultType
     Succeeded = 1,
     UserNotExist = 11,
     UserCreationFailed = 12,
+    InvalidPassword = 13,
     InvalidToken = 16,
     TokenExpired = 17,
     ExternalCodeExchangeFailed = 21,

@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace CitiesOnMap.Application.Queries.Users.GetOAuthProviderConfiguration;
+namespace CitiesOnMap.Application.Queries.Authorization.GetOAuthProviderConfiguration;
 
 public class GetOAuthProviderConfigurationRequestValidator : AbstractValidator<GetOAuthProviderConfigurationRequest>
 {

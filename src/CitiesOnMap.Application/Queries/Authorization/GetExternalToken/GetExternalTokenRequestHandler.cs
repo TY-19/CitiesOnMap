@@ -3,7 +3,7 @@ using CitiesOnMap.Application.Models.Authorization.External;
 using MediatR;
 using System.Net.Http.Json;
 
-namespace CitiesOnMap.Application.Queries.Users.GetExternalToken;
+namespace CitiesOnMap.Application.Queries.Authorization.GetExternalToken;
 
 public class GetExternalTokenRequestHandler(
     IHttpClientFactory factory)

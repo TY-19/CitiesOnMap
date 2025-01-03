@@ -5,11 +5,12 @@ using CitiesOnMap.Application.Common.Results;
 using CitiesOnMap.Application.Interfaces.Services;
 using CitiesOnMap.Application.Models.Authorization;
 using CitiesOnMap.Application.Models.Authorization.External;
-using CitiesOnMap.Application.Queries.Users.GetExternalToken;
-using CitiesOnMap.Application.Queries.Users.GetExternalUserInfo;
-using CitiesOnMap.Application.Queries.Users.GetOAuthProviderConfiguration;
+using CitiesOnMap.Application.Queries.Authorization.CheckUserPassword;
+using CitiesOnMap.Application.Queries.Authorization.GetExternalToken;
+using CitiesOnMap.Application.Queries.Authorization.GetExternalUserInfo;
+using CitiesOnMap.Application.Queries.Authorization.GetOAuthProviderConfiguration;
+using CitiesOnMap.Application.Queries.Authorization.ValidateRefreshToken;
 using CitiesOnMap.Application.Queries.Users.GetUser;
-using CitiesOnMap.Application.Queries.Users.ValidateRefreshToken;
 using CitiesOnMap.Domain.Entities;
 using MediatR;
 
@@ -44,6 +45,13 @@ public class AccountService(
         if (user == null)
         {
             return new OperationResult<TokensModel>(false, ResultType.UserNotExist);
+        }
+
+        OperationResult checkPasswordResult =
+            await mediator.Send(new CheckUserPasswordRequest(user, model.Password), cancellationToken);
+        if (!checkPasswordResult.Succeeded)
+        {
+            return new OperationResult<TokensModel>(false, ResultType.InvalidPassword);
         }
 
         TokensModel tokens = await mediator.Send(new GenerateTokensCommand(user), cancellationToken);

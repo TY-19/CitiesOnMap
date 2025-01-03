@@ -1,12 +1,68 @@
-<form [formGroup]="form">
-  <label>Username:</label>
-  <input formControlName="username" name="username" placeholder="" type="text" />
-  <label>Password:</label>
-  <input formControlName="password" name="password" placeholder="" type="password" />
-  <button type="button" (click)="onSubmit()">Login</button>
-  <button type="button" (click)="register()">Registration</button>
-  <span> Status: </span><button type="button" (click)="logout()">Logout</button>
-</form>
-<button type="button" (click)="loginOauth('google')">Login Google</button>
-<button type="button" (click)="profile()">Test authorization</button>
+<div class="menu">
+  <div class="menu-button">
+    <a [routerLink]="['game']">Continue as {{userName ?? "a Guest"}}</a>
+  </div>
+  @if(!userName) {
+    <div class="menu-button">
+      @if(!showSignIn) {
+        <div (click)="showSignIn = !showSignIn">Sign In</div>
+      }
+      @if(showSignIn) {
+        @if(mode === 'login') {
+          <div>
+            <p class="head-message">Sign in with:</p>
+            <div class="providers">
+              <span><button type="button" (click)="loginOauth('google')">Google</button></span>
+              <span>Provider 2 </span>
+              <span>Provider 3 </span>
+            </div>
+          </div>
 
+          <form [formGroup]="form" class="login">
+            <p class="head-message">...or use Cities on map account:</p>
+            <div class="inputs">
+                <label>Username: </label>
+                <input formControlName="username" type="text" />
+                <label>Password: </label>
+                <input formControlName="password" type="password" />
+                <!-- Remember me -->
+                <!-- Forgot password -->
+            </div>
+            <div class="buttons">
+              <button type="button" (click)="login()">Login</button>
+              <button type="button" (click)="showSignIn = false">Cancel</button>
+            </div>
+          </form>
+          <div class="registration">
+            <p class="head-message">Don't have an account yet?</p>
+            <a class="link" (click)="mode='register'">Create a new one</a>
+          </div>
+        }
+
+        @if(mode === 'register') {
+          <form [formGroup]="registrationForm">
+            <p class="head-message">Fill the form to create account:</p>
+            <div class="inputs">
+              <label>Username: </label>
+              <input formControlName="username" type="text" />
+              <label>Email: </label>
+              <input formControlName="email" type="email" />
+              <label>Password: </label>
+              <input formControlName="password" type="password" />
+              <!-- Remember me -->
+              <!-- Forgot password -->
+            </div>
+            <div class="buttons">
+              <button type="button" (click)="register()">Register</button>
+              <button type="button" (click)="mode='login'">Cancel</button>
+            </div>
+          </form>
+        }
+      }
+    </div>
+  } @else {
+    <div class="menu-button">
+      <div (click)="logout()">Sign Out</div>
+    </div>
+  }
+</div>

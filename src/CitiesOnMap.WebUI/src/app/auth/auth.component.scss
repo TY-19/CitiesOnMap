@@ -1,0 +1,54 @@
+.menu {
+  margin: 40px auto;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.menu-button {
+  padding: 12px 10px;
+  background-color: lightyellow;
+  border: 2px black solid;
+  border-radius: 10px;
+  text-align: center;
+  cursor: default;
+}
+.menu-button > a {
+  text-decoration: none;
+  color: black;
+}
+
+p.head-message {
+  margin: 2px;
+  font-weight: bold;
+}
+form.login {
+  padding-top: 15px;
+}
+.inputs {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-gap: 5px;
+  margin: 5px 0;
+}
+.inputs label {
+  text-align: right;
+}
+.providers {
+  margin: 0 auto;
+}
+a.link {
+  text-decoration: underline;
+  color: blue;
+  cursor: pointer;
+}
+.buttons {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+}
+.registration {
+  margin-top: 20px;
+}

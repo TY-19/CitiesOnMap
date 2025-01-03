@@ -10,7 +10,8 @@ public class ResultDetails(ResultType type)
         [ResultType.NoCityInQuestion] = "There are no city to point out to.",
         [ResultType.UserNotExist] = "The user does not exist.",
         [ResultType.UserCreationFailed] = "The user has not been created.",
-        [ResultType.InvalidToken] = "A token is invalid.",
+        [ResultType.InvalidPassword] = "The password is invalid.",
+        [ResultType.InvalidToken] = "The token is invalid.",
         [ResultType.TokenExpired] = "The token has expired.",
         [ResultType.ExternalCodeExchangeFailed] = "Code exchanging with the external provider has failed.",
         [ResultType.FetchingExternalUserInfoFailed] = "Fetching user info from the external provider has failed."

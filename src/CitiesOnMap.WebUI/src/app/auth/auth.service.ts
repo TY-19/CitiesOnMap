@@ -27,6 +27,9 @@ export class AuthService {
   get accessToken(): string | null {
     return this.localStorageService.accessToken;
   }
+  get userName(): string | null {
+    return  this.localStorageService.userName;
+  }
 
   constructor(private http: HttpClient,
               private localStorageService: LocalStorageService
@@ -86,6 +89,10 @@ export class AuthService {
     authUrl.searchParams.set('code_challenge_method', "S256");
     return authUrl.toString();
   }
+  verifyState(state?: string): boolean {
+    const stateVerifier = this.localStorageService.oauthRequestState;
+    return stateVerifier !== null && state !== undefined && stateVerifier === state;
+  }
 
   loginExternal(provider: string, code: string): Observable<TokensModel> {
     const url = baseUrl + "/account/login/" + provider;
@@ -96,7 +103,7 @@ export class AuthService {
     return this.http.post<TokensModel>(url, body)
       .pipe(tap(tokens => {
         this.localStorageService.storeTokens(tokens);
-        this.localStorageService.removeTokensFormStorage();
+        this.localStorageService.clearCodeRequestParameters();
       }));
   }
 
@@ -125,7 +132,7 @@ export class AuthService {
       this.refreshLock = true;
       this.refreshTokenSubject.next(null);
 
-      const url = baseUrl + "/api/account/refresh"
+      const url = baseUrl + "/account/refresh"
       const body: RefreshTokenModel = {
         userName: this.localStorageService.userName ?? "",
         refreshToken: this.localStorageService.refreshToken ?? ""
@@ -161,7 +168,10 @@ export class AuthService {
       userName: this.localStorageService.userName ?? "",
       refreshToken: this.localStorageService.refreshToken ?? ""
     };
-    this.localStorageService.removeTokensFormStorage();
-    return this.http.post(url, body, { observe: "response" });
+
+    return this.http.post(url, body, { observe: "response" })
+      .pipe(tap(() => {
+        this.localStorageService.clearStorage();
+      }));
   }
 }

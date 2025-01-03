@@ -53,19 +53,19 @@ public class AccountController(IAccountService accountService) : ControllerBase
     }
 
     [HttpPost("confirm-email")]
-    public async Task<ActionResult> ConfirmEmail()
+    public Task<ActionResult> ConfirmEmail()
     {
         throw new NotImplementedException();
     }
 
     [HttpGet("password-reset")]
-    public async Task<ActionResult> StartPasswordResetting()
+    public Task<ActionResult> StartPasswordResetting()
     {
         throw new NotImplementedException();
     }
 
     [HttpPost("password-reset")]
-    public async Task<ActionResult> ResetPassword()
+    public Task<ActionResult> ResetPassword()
     {
         throw new NotImplementedException();
     }

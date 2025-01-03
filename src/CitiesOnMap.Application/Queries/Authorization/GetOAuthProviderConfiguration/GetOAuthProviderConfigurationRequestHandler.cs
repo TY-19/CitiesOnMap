@@ -2,7 +2,7 @@ using CitiesOnMap.Application.Interfaces.Helpers;
 using CitiesOnMap.Application.Models.Authorization.External;
 using MediatR;
 
-namespace CitiesOnMap.Application.Queries.Users.GetOAuthProviderConfiguration;
+namespace CitiesOnMap.Application.Queries.Authorization.GetOAuthProviderConfiguration;
 
 public class GetOAuthProviderConfigurationRequestHandler(IConfigurationHelper configurationHelper)
     : IRequestHandler<GetOAuthProviderConfigurationRequest, ExternalProviderConfiguration>

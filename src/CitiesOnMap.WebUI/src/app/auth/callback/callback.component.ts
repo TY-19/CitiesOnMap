@@ -19,9 +19,8 @@ export class CallbackComponent {
     let stateVerifier = localStorage.getItem("oauth-request-state") ?? "";
     this.activatedRoute.queryParams.subscribe((params) => {
       const authorizationCode = params['code'];
-      const state = params['state'];
-
-      if (state !== stateVerifier) {
+      const state: string | undefined = params['state'];
+      if (this.authService. verifyState(state)) {
         console.error('Invalid state parameter');
         return;
       }

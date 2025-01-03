@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace CitiesOnMap.Application.Queries.Users.ValidateRefreshToken;
+namespace CitiesOnMap.Application.Queries.Authorization.ValidateRefreshToken;
 
 public class ValidateRefreshTokenRequestValidator : AbstractValidator<ValidateRefreshTokenRequest>
 {
