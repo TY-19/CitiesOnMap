@@ -11,7 +11,7 @@
   border: 2px black solid;
   border-radius: 10px;
   text-align: center;
-  cursor: default;
+  cursor: pointer;
 }
 .menu-button > a {
   text-decoration: none;
@@ -21,9 +21,6 @@
 p.head-message {
   margin: 2px;
   font-weight: bold;
-}
-form.login {
-  padding-top: 15px;
 }
 .inputs {
   display: grid;
@@ -35,7 +32,36 @@ form.login {
   text-align: right;
 }
 .providers {
-  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 10px;
+  margin: 10px 0;
+}
+.providers p {
+  width: 32px;
+  height: 32px;
+  background-size: cover;
+  margin: 0;
+  cursor: pointer;
+}
+.google-icon {
+  background: url("/icons/google64.png");
+}
+.facebook-icon {
+  background: url("/icons/facebook64.png");
+}
+.instagram-icon {
+  background: url("/icons/instagram64.png");
+}
+.linkedin-icon {
+  background: url("/icons/linkedin64.png");
+}
+.github-icon {
+  background: url("/icons/github64.png");
+}
+.x-icon {
+  background: url("/icons/twitter64.png");
 }
 a.link {
   text-decoration: underline;

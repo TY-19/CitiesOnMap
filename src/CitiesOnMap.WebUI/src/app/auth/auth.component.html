@@ -1,6 +1,6 @@
 <div class="menu">
   <div class="menu-button">
-    <a [routerLink]="['game']">Continue as {{userName ?? "a Guest"}}</a>
+    <a [routerLink]="['game']">Continue as <b>{{userName ?? "a Guest"}}</b></a>
   </div>
   @if(!userName) {
     <div class="menu-button">
@@ -12,9 +12,12 @@
           <div>
             <p class="head-message">Sign in with:</p>
             <div class="providers">
-              <span><button type="button" (click)="loginOauth('google')">Google</button></span>
-              <span>Provider 2 </span>
-              <span>Provider 3 </span>
+              <p (click)="loginOauth('google')" class="google-icon"></p>
+              <p (click)="loginOauth('facebook')" class="facebook-icon"></p>
+              <p (click)="loginOauth('linkedin')" class="linkedin-icon"></p>
+              <p (click)="loginOauth('instagram')" class="instagram-icon"></p>
+              <p (click)="loginOauth('github')" class="github-icon"></p>
+              <p (click)="loginOauth('twitter')" class="x-icon"></p>
             </div>
           </div>
 

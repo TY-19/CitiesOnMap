@@ -63,19 +63,23 @@ export class AuthService {
   }
 
   startExternalAuthorization(provider: string): void {
-    const providerConfig: AuthProviderConfig = this.selectProviderConfig(provider);
+    const providerConfig: AuthProviderConfig | null = this.selectProviderConfig(provider);
+    if(providerConfig == null) {
+      console.log(`Provider ${provider} is not configured.`);
+      return;
+    }
     pkceChallenge().then(({ code_verifier, code_challenge }) => {
       const state: string = providerConfig.statePrefix + Math.random() + Date.now().toString();
       this.localStorageService.storeCodeRequestParameters(code_verifier, state);
       window.location.href = this.buildAuthUrl(providerConfig, code_challenge, state)
     });
   }
-  private selectProviderConfig(provider: string): AuthProviderConfig {
+  private selectProviderConfig(provider: string): AuthProviderConfig | null {
     switch (provider) {
       case "Google":
         return googleConfig;
       default:
-        return googleConfig;
+        return null;
     }
   }
   private buildAuthUrl(providerConfig: AuthProviderConfig, codeChallenge: string, state: string) {
