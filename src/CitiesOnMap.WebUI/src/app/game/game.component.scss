@@ -1,0 +1,11 @@
+.buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.buttons a {
+  background-color: #0056b3;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+}

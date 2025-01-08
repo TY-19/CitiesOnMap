@@ -1,7 +1,9 @@
 <div>
-  <a (click)="startGame()">Play</a>
-  <a (click)="nextQuestion()">Next question</a>
-  <a (click)="checkAnswer()">Check</a>
+  <div class="buttons">
+    <a (click)="startGame()">Play</a>
+    <a (click)="nextQuestion()">Next question</a>
+    <a (click)="checkAnswer()">Check</a>
+  </div>
   @if(showQuestion) {
     <div> Point to {{game?.currentCityName}} </div>
   }

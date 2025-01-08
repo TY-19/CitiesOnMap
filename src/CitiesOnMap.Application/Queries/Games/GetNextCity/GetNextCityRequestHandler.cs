@@ -3,7 +3,7 @@ using CitiesOnMap.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace CitiesOnMap.Application.Queries.GetNextCity;
+namespace CitiesOnMap.Application.Queries.Games.GetNextCity;
 
 public class GetNextCityRequestHandler(
     IAppDbContext context)

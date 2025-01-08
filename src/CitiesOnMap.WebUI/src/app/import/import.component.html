@@ -1,0 +1,25 @@
+<div class="file-upload-container">
+  <button (click)="fileInput.click()" class="button select-btn" [disabled]="isProcessingFile">
+    Select File
+  </button>
+  <input #fileInput type="file" (change)="onFileSelected($event)">
+  @if(selectedFile) {
+    Selected File: {{ selectedFileName }}
+  }
+  <div class="buttons-container">
+    <button
+      (click)="importCountries()"
+      [disabled]="!selectedFile"
+      class="button upload-btn">
+      Import countries
+    </button>
+    <button
+      (click)="importCities()"
+      [disabled]="!selectedFile"
+      class="button upload-btn">
+      Import cities
+    </button>
+  </div>
+  <p>{{countriesImportResponse}}</p>
+  <p>{{citiesImportResponse}}</p>
+</div>

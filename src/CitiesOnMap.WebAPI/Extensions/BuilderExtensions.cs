@@ -4,7 +4,7 @@ using CitiesOnMap.Application.Interfaces.Data;
 using CitiesOnMap.Application.Interfaces.Helpers;
 using CitiesOnMap.Application.Interfaces.Identity;
 using CitiesOnMap.Application.Interfaces.Services;
-using CitiesOnMap.Application.Queries.GetNextCity;
+using CitiesOnMap.Application.Queries.Games.GetNextCity;
 using CitiesOnMap.Application.Services;
 using CitiesOnMap.Application.Validators;
 using CitiesOnMap.Domain.Constants;

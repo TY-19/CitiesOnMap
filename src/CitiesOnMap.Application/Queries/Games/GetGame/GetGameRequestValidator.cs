@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace CitiesOnMap.Application.Queries.GetGame;
+namespace CitiesOnMap.Application.Queries.Games.GetGame;
 
 public class GetGameRequestValidator : AbstractValidator<GetGameRequest>
 {

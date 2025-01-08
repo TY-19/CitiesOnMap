@@ -5,6 +5,8 @@ import View from 'ol/View';
 import { OSM, XYZ } from 'ol/source';
 import TileLayer from 'ol/layer/Tile';
 import {Coordinate} from "ol/coordinate";
+import {Feature} from "ol";
+import {Point} from "ol/geom";
 
 @Component({
   selector: 'citom-map',

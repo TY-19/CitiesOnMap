@@ -1,0 +1,40 @@
+input[type="file"] {
+  display: none;
+}
+.file-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.buttons-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+.button {
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+}
+.button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+.select-btn {
+  background-color: #007bff;
+  color: white;
+}
+.select-btn:hover {
+  background-color: #0056b3;
+}
+.upload-btn {
+  background-color: #27863d;
+  color: white;
+}
+.upload-btn:hover {
+  background-color: #20622d;
+}
+

@@ -12,31 +12,30 @@ public class ImportService(IAppDbContext context) : IImportService
     {
         using var reader = new StreamReader(csvFileStream);
         var countries = new Dictionary<string, Country>();
+
         while (!reader.EndOfStream)
         {
             string? line = await reader.ReadLineAsync(cancellationToken);
-            if (!TryParseLine(line, out string[]? elements) || elements == null)
+            if (TryParseLine(line, out string[]? elements)
+                && elements != null
+                && !countries.ContainsKey(elements[4]))
             {
-                continue;
+                countries.Add(elements[4], new Country
+                {
+                    Name = elements[4],
+                    Iso2 = elements[5],
+                    Iso3 = elements[6]
+                });
             }
-
-            if (countries.ContainsKey(elements[4]))
-            {
-                continue;
-            }
-
-            var country = new Country
-            {
-                Name = elements[4],
-                Iso2 = elements[5],
-                Iso3 = elements[6]
-            };
-            countries.Add(elements[4], country);
         }
 
-        await context.Countries.AddRangeAsync(countries.Values, cancellationToken);
+        List<string> names = await context.Countries.Select(c => c.Name).ToListAsync(cancellationToken);
+        List<Country> toAdd = countries.Where(kvp => !names.Contains(kvp.Key))
+            .Select(kvp => kvp.Value)
+            .ToList();
+        await context.Countries.AddRangeAsync(toAdd, cancellationToken);
         await context.SaveChangesAsync(cancellationToken);
-        return $"{countries.Count} countries has been imported";
+        return $"{toAdd.Count} countries has been imported";
     }
 
     public async Task<string> ImportCitiesAsync(Stream csvFileStream, CancellationToken cancellationToken)
@@ -62,6 +61,7 @@ public class ImportService(IAppDbContext context) : IImportService
                     Iso3 = elements[6]
                 };
                 await context.Countries.AddAsync(country, cancellationToken);
+                await context.SaveChangesAsync(cancellationToken);
             }
 
             var city = new City

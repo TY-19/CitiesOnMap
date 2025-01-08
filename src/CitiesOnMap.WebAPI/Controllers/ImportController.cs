@@ -13,13 +13,15 @@ public class ImportController(
     public async Task<ActionResult> ImportCountries(IFormFile csvFile, CancellationToken cancellationToken)
     {
         await using Stream stream = csvFile.OpenReadStream();
-        return Ok(await importService.ImportCountriesAsync(stream, cancellationToken));
+        string result = await importService.ImportCountriesAsync(stream, cancellationToken);
+        return Ok(new { result });
     }
 
     [HttpPost("cities")]
     public async Task<ActionResult> ImportCities(IFormFile csvFile, CancellationToken cancellationToken)
     {
         await using Stream stream = csvFile.OpenReadStream();
-        return Ok(await importService.ImportCitiesAsync(stream, cancellationToken));
+        string result = await importService.ImportCitiesAsync(stream, cancellationToken);
+        return Ok(new { result });
     }
 }
