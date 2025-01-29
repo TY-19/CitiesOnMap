@@ -1,7 +1,9 @@
-<select (change)="selectSource($event)">
-  <option value="opentopomap">OpenTopoMap</option>
-  <option value="OSM">OSM</option>
-</select>
+<div class="selector">
+  <select (change)="selectSource($event)">
+    <option value="opentopomap">OpenTopoMap</option>
+    <option value="OSM">OSM</option>
+  </select>
+</div>
 <div class="map-container">
   <div id="map" class="map"></div>
 </div>

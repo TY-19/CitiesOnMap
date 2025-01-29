@@ -1,7 +1,21 @@
+.map-container {
+  width: 100%;
+  overflow-y: hidden;
+}
+
 .map {
-    width: 92vw;
-    height: 90vh;
-  }
+  width: 100%;
+  height: 97vh;
+  margin-top: -20px;
+  margin-bottom: -25px;
+}
+
+.selector {
+  position: absolute;
+  right: 10px;
+  top: 75px;
+  z-index: 5;
+}
 
 :host ::ng-deep .map-container .ol-zoom .ol-zoom-in {
   position: absolute;
@@ -11,3 +25,4 @@
   position: absolute;
   top: 2.95em;
 }
+

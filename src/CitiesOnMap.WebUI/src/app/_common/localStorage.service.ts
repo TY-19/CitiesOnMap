@@ -13,6 +13,8 @@ export class LocalStorageService {
   private readonly refreshTokenExpirationKey: string = 'refresh_token_expiration';
   private readonly codeVerifierKey: string = 'pkce_code_verifier';
   private readonly stateVerifierKey: string = 'oauth_request_state';
+  private readonly playerIdKey: string = 'playerId';
+  private readonly gameIdKey: string = 'gameId';
 
   get userName(): string | null {
     return localStorage.getItem(this.userNameKey);
@@ -42,6 +44,19 @@ export class LocalStorageService {
   }
   get oauthRequestState(): string | null {
     return localStorage.getItem(this.stateVerifierKey);
+  }
+
+  get playerId(): string | null {
+    return localStorage.getItem(this.playerIdKey);
+  }
+  set playerId(playerId: string) {
+    localStorage.setItem(this.playerIdKey, playerId);
+  }
+  get gameId(): string | null {
+    return localStorage.getItem(this.gameIdKey);
+  }
+  set gameId(gameId: string) {
+    localStorage.setItem(this.gameIdKey, gameId);
   }
 
   storeTokens(tokens: TokensModel): void {

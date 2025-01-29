@@ -14,7 +14,7 @@ export class GameService {
   constructor(private http: HttpClient) {
 
   }
-  startGame(playerId?: string): Observable<GameModel> {
+  startGame(playerId: string | null): Observable<GameModel> {
     let url = baseUrl + "/game/start";
     let params = new HttpParams();
     if(playerId) {

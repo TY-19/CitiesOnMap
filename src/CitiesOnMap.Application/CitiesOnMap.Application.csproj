@@ -19,11 +19,4 @@
     <ItemGroup>
         <ProjectReference Include="..\CitiesOnMap.Domain\CitiesOnMap.Domain.csproj"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <Folder Include="Commands\Games\"/>
-        <Folder Include="Commands\Authorization\"/>
-        <Folder Include="Models\Users\"/>
-        <Folder Include="Queries\Games\"/>
-    </ItemGroup>
 </Project>
