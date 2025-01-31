@@ -12,5 +12,6 @@ public enum ResultType
     ExternalCodeExchangeFailed = 21,
     FetchingExternalUserInfoFailed = 22,
     GameNotExist = 101,
+    InvalidPlayerForGame = 102,
     NoCityInQuestion
 }

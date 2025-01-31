@@ -2,6 +2,7 @@ using CitiesOnMap.Application.Common.Results;
 using CitiesOnMap.Application.Interfaces.Services;
 using CitiesOnMap.Application.Models.Game;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace CitiesOnMap.WebAPI.Controllers;
 
@@ -9,6 +10,24 @@ namespace CitiesOnMap.WebAPI.Controllers;
 [ApiController]
 public class GameController(IGameService gameService) : ControllerBase
 {
+    [HttpGet("{gameId}")]
+    public async Task<ActionResult<GameModel>> GetGame(string gameId, string? playerId,
+        CancellationToken cancellationToken)
+    {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            playerId ??= User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        }
+
+        OperationResult<GameModel> result = await gameService.GetGameAsync(gameId, playerId ?? "", cancellationToken);
+        if (result.Payload == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(result.Payload);
+    }
+
     [HttpPost("start")]
     public async Task<ActionResult<GameModel>> StartGame(string? playerId = null,
         CancellationToken cancellationToken = default)

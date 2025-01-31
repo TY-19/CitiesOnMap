@@ -31,4 +31,9 @@ export class GameService {
     let url = baseUrl + "/game/answer";
     return this.http.post<AnswerResultModel>(url, answer);
   }
+  getGame(gameId: string, playerId: string): Observable<GameModel> {
+    let url = baseUrl + "/game/" + gameId;
+    let params = new HttpParams().set("playerId", playerId);
+    return this.http.get<GameModel>(url, { params });
+  }
 }

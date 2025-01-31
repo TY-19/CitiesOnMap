@@ -3,14 +3,12 @@ using CitiesOnMap.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
 
 namespace CitiesOnMap.Application.Queries.Games.GetGame;
 
 public class GetGameRequestHandler(
     IAppDbContext context,
-    IMemoryCache memoryCache,
-    ILogger<GetGameRequestHandler> logger
+    IMemoryCache memoryCache
 ) : IRequestHandler<GetGameRequest, Game?>
 {
     public async Task<Game?> Handle(GetGameRequest request, CancellationToken cancellationToken)
@@ -22,7 +20,6 @@ public class GetGameRequestHandler(
                 .FirstOrDefaultAsync(g => g.Id == request.GameId, cancellationToken);
         }
 
-        logger.LogInformation("Game: {@G}", game);
         return game;
     }
 }

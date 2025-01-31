@@ -13,6 +13,20 @@ namespace CitiesOnMap.Application.Services;
 
 public class GameService(IMediator mediator) : IGameService
 {
+    public async Task<OperationResult<GameModel>> GetGameAsync(string gameId, string playerId,
+        CancellationToken cancellationToken)
+    {
+        Game? game = await mediator.Send(new GetGameRequest(gameId), cancellationToken);
+        if (game == null)
+        {
+            return new OperationResult<GameModel>(false, ResultType.GameNotExist);
+        }
+
+        return game.PlayerId == playerId
+            ? new OperationResult<GameModel>(true, game.ToGameModel())
+            : new OperationResult<GameModel>(false, ResultType.InvalidPlayerForGame);
+    }
+
     public async Task<OperationResult<GameModel>> StartNewGameAsync(
         string? playerId, CancellationToken cancellationToken)
     {
@@ -49,6 +63,11 @@ public class GameService(IMediator mediator) : IGameService
 
         double distance = CalculateDistance(game.CurrentCity, answer);
         int points = 5000 - (int)distance;
+        if (points < 0)
+        {
+            points = 0;
+        }
+
         var answerResult = new AnswerResultModel
         {
             Answer = answer,

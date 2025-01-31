@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output,} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output,} from '@angular/core';
 import 'ol/ol.css';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -8,7 +8,7 @@ import {Coordinate} from "ol/coordinate";
 import VectorSource from "ol/source/Vector";
 import VectorLayer from "ol/layer/Vector";
 import {Circle, Fill, Stroke, Style} from "ol/style";
-import Feature, {FeatureLike} from 'ol/Feature';
+import Feature from 'ol/Feature';
 import {LineString, Point} from 'ol/geom';
 
 @Component({
@@ -19,6 +19,7 @@ import {LineString, Point} from 'ol/geom';
   styleUrl: './map.component.scss'
 })
 export class MapComponent implements OnInit {
+  @Input() enableSelection: boolean = true;
   @Output() selectPoint: EventEmitter<Coordinate> = new EventEmitter<Coordinate>();
   private selectedPoint: Coordinate | null = null;
   public map!: Map;
@@ -64,11 +65,34 @@ export class MapComponent implements OnInit {
     this.vectorSource.addFeature(feature);
 
     if(this.selectedPoint) {
-      const line = new Feature({
-        geometry: new LineString([this.selectedPoint, point]),
-        type: 'line'
-      });
-      this.vectorSource.addFeature(line);
+      if(Math.abs(this.selectedPoint[0] - point[0]) <= 180) {
+        const line = new Feature({
+          geometry: new LineString([this.selectedPoint, point]),
+          type: 'line'
+        });
+        this.vectorSource.addFeature(line);
+      } else {
+
+        let left: Coordinate;
+        let right: Coordinate;
+        if(this.selectedPoint[0] < 0) {
+          left = this.selectedPoint;
+          right = point;
+        } else {
+          left = point;
+          right = this.selectedPoint;
+        }
+        const lineLeft = new Feature({
+          geometry: new LineString([left, [right[0] - 360, right[1]]]),
+          type: 'line'
+        });
+        const lineRight = new Feature({
+          geometry: new LineString([right, [left[0] + 360, left[1]]]),
+          type: 'line'
+        });
+
+        this.vectorSource.addFeatures([lineLeft, lineRight]);
+      }
     }
   }
   public clearPoints() {
@@ -101,6 +125,9 @@ export class MapComponent implements OnInit {
   }
   private listenToClick() : void {
     this.map.on("click", event => {
+      if(!this.enableSelection) {
+        return;
+      }
       this.selectedPoint = this.map.getCoordinateFromPixel(event.pixel);
       this.selectPoint.emit(this.selectedPoint);
 
@@ -158,5 +185,6 @@ export class MapComponent implements OnInit {
         ])
         break;
     }
+    this.map.addLayer(this.vectorLayer);
   }
 }

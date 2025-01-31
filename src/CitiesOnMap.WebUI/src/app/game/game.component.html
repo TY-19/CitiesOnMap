@@ -1,14 +1,42 @@
-<div>
-  <div class="buttons">
-    <a (click)="startGame()">Play</a>
-    <a (click)="nextQuestion()">Next question</a>
-    <a (click)="checkAnswer()">Check</a>
+<div class="controls">
+  <div class="navigation">
+    <a (click)="showMenu = ! showMenu">
+      Menu
+    </a>
+    <a>Configuration</a>
   </div>
-  @if(showQuestion) {
-    <div> Point to {{game?.currentCityName}} </div>
-  }
-  @if(showAnswer) {
-    <div>You are {{answerResult?.distance}} away.</div>
-  }
+  <div class="game-controls">
+    @if(showAnswer) {
+      <div>
+        <b>{{answerResult?.distance | number: '1.0-1'}}</b> km away from <b>{{answerResult?.city?.name}}</b>.
+        <br>
+        <b>+{{answerResult?.points | number: '1.0-0'}}</b> points
+      </div>
+      <a (click)="nextQuestion()">Next question</a>
+    } @else if(showQuestion) {
+      <div> Point to {{game?.currentCityName}} </div>
+      <a (click)="checkAnswer()">Check</a>
+    } @else {
+      Wait...
+    }
+  </div>
+  <div class="game-result">
+      <p><span class="points">{{ points }} </span><span>points</span></p>
+  </div>
 </div>
-<citom-map (selectPoint)="setCoordinate($event)"></citom-map>
+
+@if(showMenu) {
+  <div class="menu">
+    <a (click)="showMenu=false">Continue game</a>
+    <a>Quick start</a>
+    <a (click)="startGame()">Start a new game</a>
+    <!-- Add game configuration -->
+    <a>Select game</a>
+    <a [routerLink]="['/']">Go to Main page</a>
+  </div>
+}
+
+<citom-map
+  [enableSelection]="showQuestion"
+  (selectPoint)="selectPoint($event)">
+</citom-map>

@@ -7,6 +7,7 @@ public class ResultDetails(ResultType type)
         [ResultType.Undefined] = "Unknown result.",
         [ResultType.Succeeded] = "Succeeded.",
         [ResultType.GameNotExist] = "The game does not exist.",
+        [ResultType.InvalidPlayerForGame] = "The game does not belong to the player.",
         [ResultType.NoCityInQuestion] = "There are no city to point out to.",
         [ResultType.UserNotExist] = "The user does not exist.",
         [ResultType.UserCreationFailed] = "The user has not been created.",
