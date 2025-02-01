@@ -17,6 +17,8 @@ public class GetGameRequestHandler(
         {
             game = await context.Games
                 .Include(g => g.CurrentCity)
+                .ThenInclude(c => c!.Country)
+                .Include(g => g.GameOptions)
                 .FirstOrDefaultAsync(g => g.Id == request.GameId, cancellationToken);
         }
 

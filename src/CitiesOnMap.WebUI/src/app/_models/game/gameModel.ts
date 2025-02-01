@@ -3,4 +3,6 @@ export interface GameModel {
   playerId: string;
   points: number;
   currentCityName: string | null;
+  cityPopulation: number | null;
+  country: string | null;
 }

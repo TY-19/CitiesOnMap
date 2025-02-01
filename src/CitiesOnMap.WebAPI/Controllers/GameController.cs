@@ -30,9 +30,10 @@ public class GameController(IGameService gameService) : ControllerBase
 
     [HttpPost("start")]
     public async Task<ActionResult<GameModel>> StartGame(string? playerId = null,
+        GameOptionsModel? options = null,
         CancellationToken cancellationToken = default)
     {
-        OperationResult<GameModel> result = await gameService.StartNewGameAsync(playerId, cancellationToken);
+        OperationResult<GameModel> result = await gameService.StartNewGameAsync(playerId, options, cancellationToken);
         return HandleOperationResult(result);
     }
 

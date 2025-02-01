@@ -14,7 +14,9 @@
       </div>
       <a (click)="nextQuestion()">Next question</a>
     } @else if(showQuestion) {
-      <div> Point to {{game?.currentCityName}} </div>
+      <div> Point to <b>{{game?.currentCityName}}</b>{{game?.country == null ? '' : (', ' + game?.country)}}
+        <i>{{game?.cityPopulation == null ? '' : ('(' + (game?.cityPopulation | number: '') + ')')}}</i>
+      </div>
       <a (click)="checkAnswer()">Check</a>
     } @else {
       Wait...
@@ -37,6 +39,6 @@
 }
 
 <citom-map
-  [enableSelection]="showQuestion"
+  [enableSelection]="!showAnswer"
   (selectPoint)="selectPoint($event)">
 </citom-map>

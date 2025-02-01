@@ -6,4 +6,6 @@ public class GameModel
     public string PlayerId { get; set; } = null!;
     public int Points { get; set; }
     public string? CurrentCityName { get; set; }
+    public int? CityPopulation { get; set; }
+    public string? Country { get; set; }
 }

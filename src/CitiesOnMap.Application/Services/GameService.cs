@@ -28,10 +28,13 @@ public class GameService(IMediator mediator) : IGameService
     }
 
     public async Task<OperationResult<GameModel>> StartNewGameAsync(
-        string? playerId, CancellationToken cancellationToken)
+        string? playerId, GameOptionsModel? optionsModel, CancellationToken cancellationToken)
     {
         playerId ??= Guid.NewGuid().ToString();
-        var game = new Game { PlayerId = playerId };
+        GameOptions options = optionsModel == null
+            ? new GameOptions()
+            : optionsModel.ToGameOptions();
+        var game = new Game { PlayerId = playerId, GameOptions = options };
         await mediator.Send(new SaveGameCommand(game), cancellationToken);
         return new OperationResult<GameModel>(true, game.ToGameModel());
     }
@@ -45,7 +48,7 @@ public class GameService(IMediator mediator) : IGameService
             return new OperationResult<GameModel>(false, ResultType.GameNotExist);
         }
 
-        var request = new GetNextCityRequest(game.Previous);
+        var request = new GetNextCityRequest(game);
         City? city = await mediator.Send(request, cancellationToken);
         game.CurrentCity = city;
         await mediator.Send(new SaveGameCommand(game), cancellationToken);
@@ -62,8 +65,13 @@ public class GameService(IMediator mediator) : IGameService
         }
 
         double distance = CalculateDistance(game.CurrentCity, answer);
-        int points = 5000 - (int)distance;
-        if (points < 0)
+        if (game.GameOptions.DistanceUnit == "mi")
+        {
+            distance *= AppConstants.KilometersInMile;
+        }
+
+        int points = game.GameOptions.MaxPointForAnswer - (int)distance * game.GameOptions.ReducePointsPerUnit;
+        if (points < 0 && !game.GameOptions.AllowNegativePoints)
         {
             points = 0;
         }
@@ -71,11 +79,11 @@ public class GameService(IMediator mediator) : IGameService
         var answerResult = new AnswerResultModel
         {
             Answer = answer,
-            City = game.CurrentCity,
+            City = game.CurrentCity.ToCityDto(),
             Distance = distance,
             Points = points
         };
-        game.Previous.Add(game.CurrentCity.Name);
+        game.Previous.Add(game.CurrentCity.Id);
         game.CurrentCity = null;
         game.Points += points;
         game.LastPlayTime = DateTimeOffset.UtcNow;

@@ -13,6 +13,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options)
     public DbSet<City> Cities => Set<City>();
     public DbSet<Country> Countries => Set<Country>();
     public DbSet<Game> Games => Set<Game>();
+    public DbSet<GameOptions> GameOptions => Set<GameOptions>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

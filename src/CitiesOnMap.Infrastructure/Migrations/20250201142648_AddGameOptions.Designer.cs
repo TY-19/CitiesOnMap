@@ -4,6 +4,7 @@ using CitiesOnMap.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CitiesOnMap.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250201142648_AddGameOptions")]
+    partial class AddGameOptions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,7 +63,7 @@ namespace CitiesOnMap.Infrastructure.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("Cities", (string)null);
+                    b.ToTable("Cities");
                 });
 
             modelBuilder.Entity("CitiesOnMap.Domain.Entities.Country", b =>
@@ -85,7 +88,7 @@ namespace CitiesOnMap.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Countries", (string)null);
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("CitiesOnMap.Domain.Entities.Game", b =>
@@ -118,7 +121,7 @@ namespace CitiesOnMap.Infrastructure.Migrations
 
                     b.HasIndex("CurrentCityId");
 
-                    b.ToTable("Games", (string)null);
+                    b.ToTable("Games");
                 });
 
             modelBuilder.Entity("CitiesOnMap.Domain.Entities.GameOptions", b =>
@@ -160,7 +163,7 @@ namespace CitiesOnMap.Infrastructure.Migrations
                     b.HasIndex("GameId")
                         .IsUnique();
 
-                    b.ToTable("GameOptions", (string)null);
+                    b.ToTable("GameOptions");
                 });
 
             modelBuilder.Entity("CitiesOnMap.Domain.Entities.Role", b =>

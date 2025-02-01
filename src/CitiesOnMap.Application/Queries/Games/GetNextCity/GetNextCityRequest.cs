@@ -3,4 +3,4 @@ using MediatR;
 
 namespace CitiesOnMap.Application.Queries.Games.GetNextCity;
 
-public record GetNextCityRequest(List<string> Previous) : IRequest<City?>;
+public record GetNextCityRequest(Game Game) : IRequest<City?>;

@@ -8,7 +8,9 @@ public interface IGameService
     Task<OperationResult<GameModel>> GetGameAsync(string gameId, string playerId,
         CancellationToken cancellationToken);
 
-    Task<OperationResult<GameModel>> StartNewGameAsync(string? playerId, CancellationToken cancellationToken);
+    Task<OperationResult<GameModel>> StartNewGameAsync(string? playerId,
+        GameOptionsModel? optionsModel, CancellationToken cancellationToken);
+
     Task<OperationResult<GameModel>> GetNextQuestionAsync(string gameId, CancellationToken cancellationToken);
 
     Task<OperationResult<AnswerResultModel>>

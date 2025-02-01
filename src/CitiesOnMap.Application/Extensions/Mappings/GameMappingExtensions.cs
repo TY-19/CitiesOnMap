@@ -12,7 +12,76 @@ public static class GameMappingExtensions
             Id = game.Id,
             PlayerId = game.PlayerId,
             CurrentCityName = game.CurrentCity?.Name,
+            CityPopulation = game.GameOptions.ShowPopulation
+                ? game.CurrentCity?.Population
+                : null,
+            Country = game.GameOptions.ShowCountry
+                ? game.CurrentCity?.Country.Name
+                : null,
             Points = game.Points
+        };
+    }
+
+    public static GameOptions ToGameOptions(this GameOptionsModel optionsModel)
+    {
+        var gameOptions = new GameOptions();
+        if (optionsModel.ShowCountry.HasValue)
+        {
+            gameOptions.ShowCountry = optionsModel.ShowCountry.Value;
+        }
+
+        if (optionsModel.ShowPopulation.HasValue)
+        {
+            gameOptions.ShowPopulation = optionsModel.ShowPopulation.Value;
+        }
+
+        if (optionsModel.CitiesWithPopulationOver.HasValue)
+        {
+            gameOptions.CitiesWithPopulationOver = optionsModel.CitiesWithPopulationOver.Value;
+        }
+
+        if (optionsModel.CapitalsWithPopulationOver.HasValue)
+        {
+            gameOptions.CapitalsWithPopulationOver = optionsModel.CapitalsWithPopulationOver.Value;
+        }
+
+        if (optionsModel.DistanceUnit != null)
+        {
+            gameOptions.DistanceUnit = optionsModel.DistanceUnit;
+        }
+
+        if (optionsModel.MaxPointForAnswer.HasValue)
+        {
+            gameOptions.MaxPointForAnswer = optionsModel.MaxPointForAnswer.Value;
+        }
+
+        if (optionsModel.ReducePointsPerUnit.HasValue)
+        {
+            gameOptions.ReducePointsPerUnit = optionsModel.ReducePointsPerUnit.Value;
+        }
+
+        if (optionsModel.AllowNegativePoints.HasValue)
+        {
+            gameOptions.AllowNegativePoints = optionsModel.AllowNegativePoints.Value;
+        }
+
+        return gameOptions;
+    }
+
+    public static CityDto ToCityDto(this City city)
+    {
+        return new CityDto
+        {
+            Id = city.Id,
+            Name = city.Name,
+            NameAscii = city.NameAscii,
+            Latitude = city.Latitude,
+            Longitude = city.Longitude,
+            CountryId = city.CountryId,
+            Country = city.Country.Name,
+            AdministrationName = city.AdministrationName,
+            CapitalType = city.CapitalType,
+            Population = city.Population
         };
     }
 }

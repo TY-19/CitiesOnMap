@@ -8,4 +8,5 @@ public class Game
     public List<string> Previous { get; set; } = [];
     public City? CurrentCity { get; set; }
     public DateTimeOffset LastPlayTime { get; set; } = DateTimeOffset.UtcNow;
+    public GameOptions GameOptions { get; set; } = null!;
 }

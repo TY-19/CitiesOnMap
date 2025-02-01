@@ -18,7 +18,7 @@ public class GameServiceTests
     {
         GameService service = GetGameService();
 
-        OperationResult<GameModel> result = await service.StartNewGameAsync("1234", CancellationToken.None);
+        OperationResult<GameModel> result = await service.StartNewGameAsync("1234", null, CancellationToken.None);
 
         Assert.NotNull(result);
         Assert.NotNull(result.Payload);
