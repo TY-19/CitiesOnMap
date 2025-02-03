@@ -1,3 +1,5 @@
+import {GameOptionsModel} from "./gameOptionsModel";
+
 export interface GameModel {
   id: string;
   playerId: string;
@@ -5,4 +7,5 @@ export interface GameModel {
   currentCityName: string | null;
   cityPopulation: number | null;
   country: string | null;
+  options: GameOptionsModel;
 }

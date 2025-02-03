@@ -8,6 +8,8 @@ import {AnswerResultModel} from "../_models/game/answerResultModel";
 import {LocalStorageService} from "../_common/localStorage.service";
 import {DecimalPipe} from "@angular/common";
 import {RouterLink} from "@angular/router";
+import {GameOptionsComponent} from "./game-options/game-options.component";
+import {GameOptionsModel} from "../_models/game/gameOptionsModel";
 
 @Component({
   selector: 'citom-game',
@@ -15,15 +17,18 @@ import {RouterLink} from "@angular/router";
   imports: [
     MapComponent,
     DecimalPipe,
-    RouterLink
+    RouterLink,
+    GameOptionsComponent
   ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss'
 })
 export class GameComponent implements OnInit {
   @ViewChild(MapComponent) map: MapComponent = null!;
+  @ViewChild(GameOptionsComponent) optionsComponent?: GameOptionsComponent;
   selectedPoint?: Coordinate;
   showMenu: boolean = false;
+  showGameOptions: boolean = false;
   private showQuestionInn: boolean = false;
   private showAnswerInn: boolean = false;
   get showQuestion() {
@@ -80,8 +85,12 @@ export class GameComponent implements OnInit {
   }
 
   startGame(): void {
+    let gameOptions: GameOptionsModel | null = null;
+    if(this.optionsComponent) {
+      gameOptions = this.optionsComponent.readOptionsFromForm();
+    }
     const playerId: string | null = this.localstorageService.playerId;
-    this.gameService.startGame(playerId)
+    this.gameService.startGame(playerId, gameOptions)
       .subscribe((r: GameModel) => {
         this.game = r;
         this.setParameters(this.game);

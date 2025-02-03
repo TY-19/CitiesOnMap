@@ -18,7 +18,8 @@ public static class GameMappingExtensions
             Country = game.GameOptions.ShowCountry
                 ? game.CurrentCity?.Country.Name
                 : null,
-            Points = game.Points
+            Points = game.Points,
+            Options = game.GameOptions.ToGameOptionsModel()
         };
     }
 
@@ -66,6 +67,21 @@ public static class GameMappingExtensions
         }
 
         return gameOptions;
+    }
+
+    public static GameOptionsModel ToGameOptionsModel(this GameOptions options)
+    {
+        return new GameOptionsModel
+        {
+            ShowCountry = options.ShowCountry,
+            ShowPopulation = options.ShowPopulation,
+            CapitalsWithPopulationOver = options.CapitalsWithPopulationOver,
+            CitiesWithPopulationOver = options.CitiesWithPopulationOver,
+            DistanceUnit = options.DistanceUnit,
+            MaxPointForAnswer = options.MaxPointForAnswer,
+            ReducePointsPerUnit = options.ReducePointsPerUnit,
+            AllowNegativePoints = options.AllowNegativePoints
+        };
     }
 
     public static CityDto ToCityDto(this City city)

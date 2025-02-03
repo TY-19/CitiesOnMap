@@ -66,3 +66,13 @@
   font-weight: bold;
   font-size: x-large;
 }
+.horizontal-buttons {
+  margin: 5px 0;
+}
+.menu .cancel {
+  background-color: #fba6f3;
+  border: 2px solid #ef76e4;
+}
+.menu .cancel:hover {
+  background-color: #ef76e4;
+}

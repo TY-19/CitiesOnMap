@@ -5,6 +5,7 @@ import {GameModel} from "../_models/game/gameModel";
 import {Observable} from "rxjs";
 import {AnswerResultModel} from "../_models/game/answerResultModel";
 import {AnswerModel} from "../_models/game/answerModel";
+import {GameOptionsModel} from "../_models/game/gameOptionsModel";
 
 @Injectable({
   providedIn: 'root',
@@ -14,13 +15,13 @@ export class GameService {
   constructor(private http: HttpClient) {
 
   }
-  startGame(playerId: string | null): Observable<GameModel> {
+  startGame(playerId: string | null, gameOptions: GameOptionsModel | null): Observable<GameModel> {
     let url = baseUrl + "/game/start";
     let params = new HttpParams();
     if(playerId) {
       params.set("playerId", playerId);
     }
-    return this.http.post<GameModel>(url, null, { params });
+    return this.http.post<GameModel>(url, gameOptions, { params });
   }
   getNextQuestion(gameId: string): Observable<GameModel> {
     let url = baseUrl + "/game/next-question";

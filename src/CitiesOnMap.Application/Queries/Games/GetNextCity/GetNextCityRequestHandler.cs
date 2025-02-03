@@ -12,19 +12,12 @@ public class GetNextCityRequestHandler(
 {
     public async Task<City?> Handle(GetNextCityRequest request, CancellationToken cancellationToken)
     {
-        IQueryable<City> filteredCities = context.Cities
+        List<City> cities = await context.Cities
             .Include(c => c.Country)
             .Where(c => !request.Game.Previous.Contains(c.Id)
                         && ((c.CapitalType == CapitalType.Primary &&
                              c.Population > request.Game.GameOptions.CapitalsWithPopulationOver)
-                            || c.Population > request.Game.GameOptions.CitiesWithPopulationOver));
-        // int citiesCount = await filteredCities.CountAsync(cancellationToken);
-        // int randomSkip = Random.Shared.Next(citiesCount - 1);
-        // if (randomSkip < 1)
-        // {
-        //     randomSkip = 1;
-        // }
-        List<City> cities = await filteredCities
+                            || c.Population > request.Game.GameOptions.CitiesWithPopulationOver))
             .OrderBy(c => Guid.NewGuid())
             .Take(1)
             .ToListAsync(cancellationToken);

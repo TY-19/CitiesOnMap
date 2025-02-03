@@ -1,0 +1,37 @@
+<form [formGroup]="form">
+  <div class="option">
+    <label>Show country in question:</label>
+    <input type="checkbox" formControlName="showCountry">
+  </div>
+  <div class="option">
+    <label>Show the city's population in question:</label>
+    <input type="checkbox" formControlName="showPopulation">
+  </div>
+  <div class="option">
+    <label>Include question about capitals with the population over (people):</label>
+    <input type="number" formControlName="capitalsWithPopulationOver">
+  </div>
+  <div class="option">
+    <label>Include question about non-capital cities with the population over (people):</label>
+    <input type="number" formControlName="citiesWithPopulationOver">
+  </div>
+  <div class="option">
+    <label>Max points per answer:</label>
+    <input type="number" formControlName="maxPointForAnswer">
+  </div>
+  <div class="option">
+    <label>Unit of distance:</label>
+    <select formControlName="distanceUnit">
+      <option value="km" selected>Km</option>
+      <option value="mi">Mi</option>
+    </select>
+  </div>
+  <div class="option">
+    <label>Reduce points per 1 unit of distance:</label>
+    <input type="number" formControlName="reducePointsPerUnit">
+  </div>
+  <div class="option">
+    <label>Allow negative points for answer:</label>
+    <input type="checkbox" formControlName="allowNegativePoints">
+  </div>
+</form>
