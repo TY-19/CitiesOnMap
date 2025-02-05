@@ -3,7 +3,7 @@
     <a (click)="showMenu = ! showMenu">
       Menu
     </a>
-    <a (click)="showMenu = false; showGameOptions=true;">Configuration</a>
+    <a (click)="showOptions('update')">Configuration</a>
   </div>
   <div class="game-controls">
     @if(showAnswer) {
@@ -31,7 +31,7 @@
   <div class="menu">
     <a (click)="showMenu=false">Continue game</a>
     <a (click)="startGame()">Quick start</a>
-    <a (click)="showMenu=false; showGameOptions=!showGameOptions">Start a new game</a>
+    <a (click)="showOptions('create')">Start a new game</a>
     <a>Select game</a>
     <a [routerLink]="['/']">Go to Main page</a>
   </div>
@@ -41,7 +41,11 @@
   <div class="menu">
     <citom-game-options [options]="game?.options"></citom-game-options>
     <div class="horizontal-buttons">
-      <a (click)="startGame()">Start game</a>
+      @if(optionsMenuMode === "create") {
+        <a (click)="startGame()">Start game</a>
+      } @else {
+        <a (click)="updateOptions()">Save</a>
+      }
       <a (click)="showGameOptions=false" class="cancel">Cancel</a>
     </div>
   </div>

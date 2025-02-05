@@ -29,6 +29,7 @@ export class GameComponent implements OnInit {
   selectedPoint?: Coordinate;
   showMenu: boolean = false;
   showGameOptions: boolean = false;
+  optionsMenuMode: "create" | "update" = "create";
   private showQuestionInn: boolean = false;
   private showAnswerInn: boolean = false;
   get showQuestion() {
@@ -135,6 +136,25 @@ export class GameComponent implements OnInit {
         this.showAnswer = true;
         this.map.displayAnswerPoint([r.city.longitude, r.city.latitude]);
       });
+  }
+  showOptions(mode: "create" | "update") {
+    this.showMenu = false;
+    this.optionsMenuMode = mode;
+    this.showGameOptions = true;
+  }
+  updateOptions(): void {
+    if(!this.optionsComponent || !this.game) {
+      return;
+    }
+    let gameOptions: GameOptionsModel = this.optionsComponent.readOptionsFromForm();
+    const playerId: string | null = this.localstorageService.playerId;
+    this.gameService.updateGameOptions(playerId, this.game?.id, gameOptions)
+      .subscribe((r: GameModel) => {
+        this.game = r;
+        this.setParameters(this.game);
+        // this.nextQuestion();
+      });
+    this.showMenu = false;
   }
   private setParameters(game: GameModel) {
     this.localstorageService.playerId = game.playerId;

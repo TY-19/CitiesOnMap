@@ -1,16 +1,16 @@
-using CitiesOnMap.Application.Commands.Authorization.GenerateTokens;
-using CitiesOnMap.Application.Commands.Authorization.RevokeToken;
-using CitiesOnMap.Application.Commands.Users.CreateUser;
 using CitiesOnMap.Application.Common.Results;
+using CitiesOnMap.Application.Features.Authorization.Commands.GenerateTokens;
+using CitiesOnMap.Application.Features.Authorization.Commands.RevokeToken;
+using CitiesOnMap.Application.Features.Authorization.Models;
+using CitiesOnMap.Application.Features.Authorization.Models.External;
+using CitiesOnMap.Application.Features.Authorization.Requests.CheckUserPassword;
+using CitiesOnMap.Application.Features.Authorization.Requests.GetExternalToken;
+using CitiesOnMap.Application.Features.Authorization.Requests.GetExternalUserInfo;
+using CitiesOnMap.Application.Features.Authorization.Requests.GetOAuthProviderConfiguration;
+using CitiesOnMap.Application.Features.Authorization.Requests.ValidateRefreshToken;
+using CitiesOnMap.Application.Features.Users.Commands.CreateUser;
+using CitiesOnMap.Application.Features.Users.Requests.GetUser;
 using CitiesOnMap.Application.Interfaces.Services;
-using CitiesOnMap.Application.Models.Authorization;
-using CitiesOnMap.Application.Models.Authorization.External;
-using CitiesOnMap.Application.Queries.Authorization.CheckUserPassword;
-using CitiesOnMap.Application.Queries.Authorization.GetExternalToken;
-using CitiesOnMap.Application.Queries.Authorization.GetExternalUserInfo;
-using CitiesOnMap.Application.Queries.Authorization.GetOAuthProviderConfiguration;
-using CitiesOnMap.Application.Queries.Authorization.ValidateRefreshToken;
-using CitiesOnMap.Application.Queries.Users.GetUser;
 using CitiesOnMap.Domain.Entities;
 using MediatR;
 

@@ -1,7 +1,7 @@
 using CitiesOnMap.Application.Common.Results;
+using CitiesOnMap.Application.Features.Authorization.Models;
+using CitiesOnMap.Application.Features.Authorization.Models.External;
 using CitiesOnMap.Application.Interfaces.Services;
-using CitiesOnMap.Application.Models.Authorization;
-using CitiesOnMap.Application.Models.Authorization.External;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

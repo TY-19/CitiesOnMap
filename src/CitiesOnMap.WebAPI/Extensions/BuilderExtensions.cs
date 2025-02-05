@@ -1,12 +1,12 @@
 using CitiesOnMap.Application.Behaviors;
+using CitiesOnMap.Application.Features.Authorization.Validators;
+using CitiesOnMap.Application.Features.Games.Requests.GetNextCity;
 using CitiesOnMap.Application.Helpers;
 using CitiesOnMap.Application.Interfaces.Data;
 using CitiesOnMap.Application.Interfaces.Helpers;
 using CitiesOnMap.Application.Interfaces.Identity;
 using CitiesOnMap.Application.Interfaces.Services;
-using CitiesOnMap.Application.Queries.Games.GetNextCity;
 using CitiesOnMap.Application.Services;
-using CitiesOnMap.Application.Validators;
 using CitiesOnMap.Domain.Constants;
 using CitiesOnMap.Domain.Entities;
 using CitiesOnMap.Infrastructure.Data;

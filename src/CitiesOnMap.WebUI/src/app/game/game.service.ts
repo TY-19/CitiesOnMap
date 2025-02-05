@@ -19,7 +19,7 @@ export class GameService {
     let url = baseUrl + "/game/start";
     let params = new HttpParams();
     if(playerId) {
-      params.set("playerId", playerId);
+      params = params.set("playerId", playerId);
     }
     return this.http.post<GameModel>(url, gameOptions, { params });
   }
@@ -31,6 +31,14 @@ export class GameService {
   sendAnswer(answer: AnswerModel): Observable<AnswerResultModel> {
     let url = baseUrl + "/game/answer";
     return this.http.post<AnswerResultModel>(url, answer);
+  }
+  updateGameOptions(playerId: string | null, gameId: string, gameOptions: GameOptionsModel): Observable<GameModel> {
+    let url = baseUrl + "/game/options";
+    let params = new HttpParams().set("gameId", gameId);
+    if(playerId) {
+      params = params.set("playerId", playerId);
+    }
+    return this.http.put<GameModel>(url, gameOptions, { params });
   }
   getGame(gameId: string, playerId: string): Observable<GameModel> {
     let url = baseUrl + "/game/" + gameId;

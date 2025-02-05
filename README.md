@@ -6,6 +6,7 @@
 
 ### Introduction
 CitiesOnMap is an engaging browser-based geography game that tests your knowledge of world cities. Challenge yourself to pinpoint cities on a world map with increasing difficulty as you progress through the levels.
+![Gameplay](screenshots/gameplay.jpg)
 
 ### Features
 - Different map sources

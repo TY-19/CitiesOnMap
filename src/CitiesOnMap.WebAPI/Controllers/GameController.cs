@@ -1,6 +1,6 @@
 using CitiesOnMap.Application.Common.Results;
+using CitiesOnMap.Application.Features.Games.Models;
 using CitiesOnMap.Application.Interfaces.Services;
-using CitiesOnMap.Application.Models.Game;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -49,6 +49,21 @@ public class GameController(IGameService gameService) : ControllerBase
         CancellationToken cancellationToken)
     {
         OperationResult<AnswerResultModel> result = await gameService.ProcessAnswerAsync(answer, cancellationToken);
+        return HandleOperationResult(result);
+    }
+
+    [HttpPut("options")]
+    public async Task<ActionResult<GameModel>> ChangeOptions(string? playerId, string gameId, GameOptionsModel options,
+        CancellationToken cancellationToken)
+    {
+        if (User.Identity?.IsAuthenticated == true)
+        {
+            playerId ??= User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+        }
+
+        OperationResult<GameModel> result = await gameService.UpdateGameOptionsAsync(
+            playerId, gameId, options, cancellationToken);
+
         return HandleOperationResult(result);
     }
 

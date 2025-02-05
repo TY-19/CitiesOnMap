@@ -1,8 +1,8 @@
-using CitiesOnMap.Application.Commands.Games.SaveGame;
 using CitiesOnMap.Application.Common.Results;
-using CitiesOnMap.Application.Models.Game;
-using CitiesOnMap.Application.Queries.Games.GetGame;
-using CitiesOnMap.Application.Queries.Games.GetNextCity;
+using CitiesOnMap.Application.Features.Games.Commands.SaveGame;
+using CitiesOnMap.Application.Features.Games.Models;
+using CitiesOnMap.Application.Features.Games.Requests.GetGame;
+using CitiesOnMap.Application.Features.Games.Requests.GetNextCity;
 using CitiesOnMap.Application.Services;
 using CitiesOnMap.Domain.Entities;
 using CitiesOnMap.Domain.Enums;
