@@ -5,7 +5,10 @@ namespace CitiesOnMap.Application.Interfaces.Services;
 
 public interface IGameService
 {
-    Task<OperationResult<GameModel>> GetGameAsync(string gameId, string playerId,
+    Task<OperationResult<IEnumerable<GameModel>>> GetGamesForPlayerAsync(
+        string? userId, string? playerId, CancellationToken cancellationToken);
+
+    Task<OperationResult<GameModel>> GetGameAsync(string gameId, string? userId, string? playerId,
         CancellationToken cancellationToken);
 
     Task<OperationResult<GameModel>> StartNewGameAsync(string? playerId,
@@ -16,6 +19,6 @@ public interface IGameService
     Task<OperationResult<AnswerResultModel>>
         ProcessAnswerAsync(AnswerModel answer, CancellationToken cancellationToken);
 
-    Task<OperationResult<GameModel>> UpdateGameOptionsAsync(string? playerId, string gameId,
+    Task<OperationResult<GameModel>> UpdateGameOptionsAsync(string gameId, string? userId, string? playerId,
         GameOptionsModel optionsModel, CancellationToken cancellationToken);
 }

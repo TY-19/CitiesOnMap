@@ -1,0 +1,23 @@
+.container {
+  width: fit-content;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+}
+.container>div {
+  padding: 5px;
+  text-align: center;
+  outline: 1px solid #DE6435FF;
+  align-content: center;
+}
+.container>div:nth-child(-n+5) {
+  font-weight: bold;
+}
+.button {
+  background-color: #0056b3;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+  height: fit-content;
+  border-radius: 25px;
+}

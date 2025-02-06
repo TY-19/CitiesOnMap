@@ -8,5 +8,6 @@ public class GameModel
     public string? CurrentCityName { get; set; }
     public int? CityPopulation { get; set; }
     public string? Country { get; set; }
+    public DateTimeOffset LastPlayTime { get; set; }
     public GameOptionsModel Options { get; set; } = null!;
 }

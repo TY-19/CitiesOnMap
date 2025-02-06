@@ -1,6 +1,6 @@
 <div class="controls">
   <div class="navigation">
-    <a (click)="showMenu = ! showMenu">
+    <a (click)="changeMenuDisplay()">
       Menu
     </a>
     <a (click)="showOptions('update')">Configuration</a>
@@ -27,17 +27,17 @@
   </div>
 </div>
 
-@if(showMenu) {
+@if(displayMenuMode === 'menu') {
   <div class="menu">
-    <a (click)="showMenu=false">Continue game</a>
+    <a (click)="displayMenuMode='hidden'">Continue game</a>
     <a (click)="startGame()">Quick start</a>
     <a (click)="showOptions('create')">Start a new game</a>
-    <a>Select game</a>
+    <a (click)="displayMenuMode='games'">Select game</a>
     <a [routerLink]="['/']">Go to Main page</a>
   </div>
 }
 
-@if(showGameOptions) {
+@if(displayMenuMode === 'options') {
   <div class="menu">
     <citom-game-options [options]="game?.options"></citom-game-options>
     <div class="horizontal-buttons">
@@ -46,12 +46,21 @@
       } @else {
         <a (click)="updateOptions()">Save</a>
       }
-      <a (click)="showGameOptions=false" class="cancel">Cancel</a>
+      <a (click)="displayMenuMode='hidden'" class="cancel">Cancel</a>
     </div>
+  </div>
+}
+
+@if(displayMenuMode === 'games') {
+  <div class="menu">
+    <citom-select-game
+      (selectGameEvent)="switchGame($event)">
+    </citom-select-game>
+    <a (click)="displayMenuMode='hidden'" class="cancel">Cancel</a>
   </div>
 }
 
 <citom-map
   [enableSelection]="!showAnswer"
-  (selectPoint)="selectPoint($event)">
+  (selectPointEvent)="selectPoint($event)">
 </citom-map>

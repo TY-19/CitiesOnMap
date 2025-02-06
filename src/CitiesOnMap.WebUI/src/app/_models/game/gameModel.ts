@@ -7,5 +7,6 @@ export interface GameModel {
   currentCityName: string | null;
   cityPopulation: number | null;
   country: string | null;
+  lastPlayTime: Date;
   options: GameOptionsModel;
 }

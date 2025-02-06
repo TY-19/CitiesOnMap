@@ -20,7 +20,7 @@ import {LineString, Point} from 'ol/geom';
 })
 export class MapComponent implements OnInit {
   @Input() enableSelection: boolean = true;
-  @Output() selectPoint: EventEmitter<Coordinate> = new EventEmitter<Coordinate>();
+  @Output() selectPointEvent: EventEmitter<Coordinate> = new EventEmitter<Coordinate>();
   private selectedPoint: Coordinate | null = null;
   public map!: Map;
   private vectorSource!: VectorSource;
@@ -129,7 +129,7 @@ export class MapComponent implements OnInit {
         return;
       }
       this.selectedPoint = this.map.getCoordinateFromPixel(event.pixel);
-      this.selectPoint.emit(this.selectedPoint);
+      this.selectPointEvent.emit(this.selectedPoint);
 
       this.vectorSource.clear();
 

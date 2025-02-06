@@ -1,0 +1,14 @@
+<div class="container">
+    <div>Id</div>
+    <div>Points</div>
+    <div>Last played</div>
+    <div>Current question</div>
+    <div></div>
+  @for(g of games; track g.id) {
+    <div>{{g.id}}</div>
+    <div>{{g.points | number: '1.0-0'}}</div>
+    <div>{{g.lastPlayTime | date: 'yyyy-MM-dd hh:mm:ss'}}</div>
+    <div>{{g.currentCityName}}</div>
+    <div><div (click)="selectGame(g)" class="button">Play</div></div>
+  }
+</div>

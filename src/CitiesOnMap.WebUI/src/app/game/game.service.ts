@@ -45,4 +45,12 @@ export class GameService {
     let params = new HttpParams().set("playerId", playerId);
     return this.http.get<GameModel>(url, { params });
   }
+  getPlayerGames(playerId: string | null): Observable<GameModel[]> {
+    let url: string = baseUrl + "/game/all-current"
+    let params = new HttpParams();
+    if(playerId) {
+      params = params.set("playerId", playerId);
+    }
+    return this.http.get<GameModel[]>(url, { params });
+  }
 }

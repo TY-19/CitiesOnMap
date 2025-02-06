@@ -35,7 +35,7 @@ export class GameOptionsComponent implements OnInit {
   private initiateForm() {
     this.form = new FormGroup({
       showCountry: new FormControl(this.options?.showCountry, [Validators.required]),
-      showPopulation: new FormControl(this.options?.showCountry, [Validators.required]),
+      showPopulation: new FormControl(this.options?.showPopulation, [Validators.required]),
       capitalsWithPopulationOver: new FormControl(this.options?.capitalsWithPopulationOver, [Validators.required, Validators.min(0)]),
       citiesWithPopulationOver: new FormControl(this.options?.citiesWithPopulationOver, [Validators.required, Validators.min(0)]),
       distanceUnit: new FormControl(this.options?.distanceUnit, [Validators.required]),

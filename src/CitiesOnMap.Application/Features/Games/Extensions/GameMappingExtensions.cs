@@ -19,6 +19,7 @@ public static class GameMappingExtensions
                 ? game.CurrentCity?.Country.Name
                 : null,
             Points = game.Points,
+            LastPlayTime = game.LastPlayTime,
             Options = game.GameOptions.ToGameOptionsModel()
         };
     }

@@ -5,6 +5,7 @@ using CitiesOnMap.Application.Features.Games.Commands.SaveGame;
 using CitiesOnMap.Application.Features.Games.Extensions;
 using CitiesOnMap.Application.Features.Games.Models;
 using CitiesOnMap.Application.Features.Games.Requests.GetGame;
+using CitiesOnMap.Application.Features.Games.Requests.GetGamesForPlayer;
 using CitiesOnMap.Application.Features.Games.Requests.GetNextCity;
 using CitiesOnMap.Application.Features.Users.Requests.GetUser;
 using CitiesOnMap.Application.Interfaces.Services;
@@ -15,8 +16,34 @@ namespace CitiesOnMap.Application.Services;
 
 public class GameService(IMediator mediator) : IGameService
 {
-    public async Task<OperationResult<GameModel>> GetGameAsync(string gameId, string playerId,
-        CancellationToken cancellationToken)
+    public async Task<OperationResult<IEnumerable<GameModel>>> GetGamesForPlayerAsync(
+        string? userId, string? playerId, CancellationToken cancellationToken)
+    {
+        List<GameModel> games = [];
+        if (userId != null)
+        {
+            games.AddRange((await mediator.Send(new GetGamesForPlayerRequest(userId), cancellationToken))
+                .Select(g => g.ToGameModel()));
+        }
+
+        if (playerId == null || playerId == userId)
+        {
+            return new OperationResult<IEnumerable<GameModel>>(true, games);
+        }
+
+        User? user = await mediator.Send(new GetUserRequest(
+            playerId, null, null, null, null), cancellationToken);
+        if (user == null)
+        {
+            games.AddRange((await mediator.Send(new GetGamesForPlayerRequest(playerId), cancellationToken))
+                .Select(g => g.ToGameModel()));
+        }
+
+        return new OperationResult<IEnumerable<GameModel>>(true, games);
+    }
+
+    public async Task<OperationResult<GameModel>> GetGameAsync(
+        string gameId, string? userId, string? playerId, CancellationToken cancellationToken)
     {
         Game? game = await mediator.Send(new GetGameRequest(gameId), cancellationToken);
         if (game == null)
@@ -24,9 +51,12 @@ public class GameService(IMediator mediator) : IGameService
             return new OperationResult<GameModel>(false, ResultType.GameNotExist);
         }
 
-        return game.PlayerId == playerId
-            ? new OperationResult<GameModel>(true, game.ToGameModel())
-            : new OperationResult<GameModel>(false, ResultType.InvalidPlayerForGame);
+        if (!await IsGameOwnedByPlayer(userId, playerId, game, cancellationToken))
+        {
+            return new OperationResult<GameModel>(false, ResultType.InvalidPlayerForGame);
+        }
+
+        return new OperationResult<GameModel>(true, game.ToGameModel());
     }
 
     public async Task<OperationResult<GameModel>> StartNewGameAsync(
@@ -75,8 +105,8 @@ public class GameService(IMediator mediator) : IGameService
         return new OperationResult<AnswerResultModel>(true, answerResult);
     }
 
-    public async Task<OperationResult<GameModel>> UpdateGameOptionsAsync(string? playerId, string gameId,
-        GameOptionsModel optionsModel, CancellationToken cancellationToken)
+    public async Task<OperationResult<GameModel>> UpdateGameOptionsAsync(string gameId,
+        string? userId, string? playerId, GameOptionsModel optionsModel, CancellationToken cancellationToken)
     {
         Game? game = await mediator.Send(new GetGameRequest(gameId), cancellationToken);
         if (game == null)
@@ -84,9 +114,7 @@ public class GameService(IMediator mediator) : IGameService
             return new OperationResult<GameModel>(false, ResultType.GameNotExist);
         }
 
-        User? user = await mediator.Send(new GetUserRequest(
-            game.PlayerId, null, null, null, null), cancellationToken);
-        if ((user != null && user.Id != playerId) || game.PlayerId != playerId)
+        if (!await IsGameOwnedByPlayer(userId, playerId, game, cancellationToken))
         {
             return new OperationResult<GameModel>(false, ResultType.InvalidPlayerForGame);
         }
@@ -95,5 +123,15 @@ public class GameService(IMediator mediator) : IGameService
         await mediator.Send(new SaveGameCommand(game), cancellationToken);
 
         return new OperationResult<GameModel>(true, game.ToGameModel());
+    }
+
+    private async Task<bool> IsGameOwnedByPlayer(string? userId, string? playerId, Game game,
+        CancellationToken cancellationToken)
+    {
+        User? user = await mediator.Send(new GetUserRequest(
+            game.PlayerId, null, null, null, null), cancellationToken);
+        return user == null
+            ? game.PlayerId == playerId
+            : user.Id == userId && game.PlayerId == userId;
     }
 }

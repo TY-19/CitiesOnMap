@@ -10,6 +10,7 @@ import {DecimalPipe} from "@angular/common";
 import {RouterLink} from "@angular/router";
 import {GameOptionsComponent} from "./game-options/game-options.component";
 import {GameOptionsModel} from "../_models/game/gameOptionsModel";
+import {SelectGameComponent} from "./select-game/select-game.component";
 
 @Component({
   selector: 'citom-game',
@@ -18,7 +19,8 @@ import {GameOptionsModel} from "../_models/game/gameOptionsModel";
     MapComponent,
     DecimalPipe,
     RouterLink,
-    GameOptionsComponent
+    GameOptionsComponent,
+    SelectGameComponent
   ],
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss'
@@ -27,8 +29,7 @@ export class GameComponent implements OnInit {
   @ViewChild(MapComponent) map: MapComponent = null!;
   @ViewChild(GameOptionsComponent) optionsComponent?: GameOptionsComponent;
   selectedPoint?: Coordinate;
-  showMenu: boolean = false;
-  showGameOptions: boolean = false;
+  displayMenuMode: "hidden" | "menu" | "options" | "games" = "hidden";
   optionsMenuMode: "create" | "update" = "create";
   private showQuestionInn: boolean = false;
   private showAnswerInn: boolean = false;
@@ -77,11 +78,11 @@ export class GameComponent implements OnInit {
             this.game = r;
             this.showQuestion = this.game.currentCityName !== null;
           } else {
-            this.showMenu = true;
+            this.displayMenuMode = "menu";
           }
         });
     } else {
-      this.showMenu = true;
+      this.displayMenuMode = "menu";
     }
   }
 
@@ -97,7 +98,7 @@ export class GameComponent implements OnInit {
         this.setParameters(this.game);
         this.nextQuestion();
       });
-    this.showMenu = false;
+    this.displayMenuMode = "hidden";
   }
   nextQuestion(): void {
     let gameId: string | null;
@@ -114,6 +115,7 @@ export class GameComponent implements OnInit {
         .subscribe(r => {
           this.game = r;
           this.map.clearPoints();
+          this.selectedPoint = undefined;
           this.showQuestion = true;
         });
     }
@@ -137,10 +139,24 @@ export class GameComponent implements OnInit {
         this.map.displayAnswerPoint([r.city.longitude, r.city.latitude]);
       });
   }
+  switchGame(game: GameModel) {
+    this.game = game;
+    this.setParameters(this.game);
+    this.map.clearPoints();
+    if(this.game.currentCityName) {
+      this.showQuestion = true;
+    } else {
+      this.nextQuestion();
+    }
+    this.displayMenuMode = "hidden";
+  }
   showOptions(mode: "create" | "update") {
-    this.showMenu = false;
     this.optionsMenuMode = mode;
-    this.showGameOptions = true;
+    if(this.displayMenuMode === "options") {
+      this.displayMenuMode = "hidden"
+    } else {
+      this.displayMenuMode = "options";
+    }
   }
   updateOptions(): void {
     if(!this.optionsComponent || !this.game) {
@@ -152,9 +168,15 @@ export class GameComponent implements OnInit {
       .subscribe((r: GameModel) => {
         this.game = r;
         this.setParameters(this.game);
-        // this.nextQuestion();
       });
-    this.showMenu = false;
+    this.displayMenuMode = "hidden";
+  }
+  changeMenuDisplay() {
+    if(this.displayMenuMode !== "hidden") {
+      this.displayMenuMode = "hidden";
+    } else {
+      this.displayMenuMode = "menu";
+    }
   }
   private setParameters(game: GameModel) {
     this.localstorageService.playerId = game.playerId;

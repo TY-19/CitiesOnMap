@@ -10,22 +10,24 @@ namespace CitiesOnMap.WebAPI.Controllers;
 [ApiController]
 public class GameController(IGameService gameService) : ControllerBase
 {
-    [HttpGet("{gameId}")]
-    public async Task<ActionResult<GameModel>> GetGame(string gameId, string? playerId,
-        CancellationToken cancellationToken)
+    [HttpGet("all-current")]
+    public async Task<ActionResult<IEnumerable<GameModel>>> GetMyGames(string? playerId = null,
+        CancellationToken cancellationToken = default)
     {
-        if (User.Identity?.IsAuthenticated == true)
-        {
-            playerId ??= User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-        }
+        OperationResult<IEnumerable<GameModel>> result = await gameService.GetGamesForPlayerAsync(
+            GetUserId(), playerId, cancellationToken);
+        return HandleOperationResult(result);
+    }
 
-        OperationResult<GameModel> result = await gameService.GetGameAsync(gameId, playerId ?? "", cancellationToken);
-        if (result.Payload == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(result.Payload);
+    [HttpGet("{gameId}")]
+    public async Task<ActionResult<GameModel>> GetGame(string gameId, string? playerId = null,
+        CancellationToken cancellationToken = default)
+    {
+        OperationResult<GameModel> result =
+            await gameService.GetGameAsync(gameId, GetUserId(), playerId, cancellationToken);
+        return result.Details.Type == ResultType.GameNotExist
+            ? NotFound()
+            : HandleOperationResult(result);
     }
 
     [HttpPost("start")]
@@ -53,16 +55,11 @@ public class GameController(IGameService gameService) : ControllerBase
     }
 
     [HttpPut("options")]
-    public async Task<ActionResult<GameModel>> ChangeOptions(string? playerId, string gameId, GameOptionsModel options,
-        CancellationToken cancellationToken)
+    public async Task<ActionResult<GameModel>> ChangeOptions(string gameId, GameOptionsModel options,
+        string? playerId = null, CancellationToken cancellationToken = default)
     {
-        if (User.Identity?.IsAuthenticated == true)
-        {
-            playerId ??= User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-        }
-
         OperationResult<GameModel> result = await gameService.UpdateGameOptionsAsync(
-            playerId, gameId, options, cancellationToken);
+            gameId, GetUserId(), playerId, options, cancellationToken);
 
         return HandleOperationResult(result);
     }
@@ -75,5 +72,10 @@ public class GameController(IGameService gameService) : ControllerBase
         }
 
         return BadRequest(result.Details);
+    }
+
+    private string? GetUserId()
+    {
+        return User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
     }
 }
